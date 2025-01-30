@@ -1,5 +1,11 @@
+import PeoplePage from './layout/PeoplePage/PeoplePage';
+
 function App() {
-  return <>npm run lint</>;
+  return (
+    <>
+      <PeoplePage />
+    </>
+  );
 }
 
 export default App;
