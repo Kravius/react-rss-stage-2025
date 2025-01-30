@@ -4,18 +4,22 @@ import { Component, ReactNode } from 'react';
 
 import { getApiResource } from '../../api';
 import { API_ROOT } from '../../constants/api';
-import NoFiles from '../../components/NoFiles';
+import NoFiles from '../../components/ErrorMessage';
 import { getPeopleId, getPeopleImg } from '../../services/getData';
 import PeopleList from '../../components/PeopleList/PeopleList';
 
 //type
 import { PeopleResponse, Person, PersonToRender, State } from './type';
+import Spinner from '../../components/Spinner/Spinner';
+import Search from '../../components/search';
 
 class PeoplePage extends Component<object, State> {
   constructor(props: object) {
     super(props);
     this.state = {
       people: null,
+      errorApi: false,
+      filterPeople: null,
     };
   }
 
@@ -26,28 +30,58 @@ class PeoplePage extends Component<object, State> {
   getResource = async (url: string) => {
     const res: PeopleResponse = await getApiResource(url);
 
-    const peopleList: PersonToRender[] = res.results.map((person: Person) => {
-      const id = getPeopleId(person.url);
-      const img = getPeopleImg(id);
+    if (res) {
+      const peopleList: PersonToRender[] = res.results.map((person: Person) => {
+        const id = getPeopleId(person.url);
+        const img = getPeopleImg(id);
+        return {
+          name: person.name,
+          id,
+          img,
+        };
+      });
 
-      return {
-        name: person.name,
-        id,
-        img,
-      };
-    });
+      this.setState({ people: peopleList });
+      this.setState({ errorApi: false });
 
-    this.setState({ people: peopleList });
+      this.checkLocalStorage();
+    } else {
+      this.setState({ errorApi: true });
+    }
+  };
+
+  checkLocalStorage() {
+    const searchTerm = localStorage.getItem('searchTerm');
+    if (searchTerm) {
+      this.onSearch(JSON.parse(searchTerm));
+    }
+  }
+
+  onSearch = (searchTerm: string) => {
+    const { people } = this.state;
+    console.log(people, 'onSearch people');
+    if (!people) return;
+    const filterPeople = people.filter((person) =>
+      person.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
+    );
+    console.log(filterPeople, 'filterPeople');
+    this.setState({ people: filterPeople });
   };
 
   render(): ReactNode {
-    const { people } = this.state;
+    const { people, errorApi } = this.state;
     return (
-      <>
-        <div className={styles['main_people-container']}>
-          {people ? <PeopleList people={people} /> : <NoFiles />}
-        </div>
-      </>
+      <div className={styles['main_people-container']}>
+        <Search onSearch={this.onSearch} />
+        {errorApi ? (
+          <NoFiles />
+        ) : people ? (
+          <PeopleList people={people} />
+        ) : (
+          <Spinner />
+        )}
+        <div className={styles['people']}></div>
+      </div>
     );
   }
 }

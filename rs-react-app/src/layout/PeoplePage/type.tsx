@@ -31,6 +31,8 @@ export interface PersonToRender extends Omit<Person, 'url'> {
 
 export interface State {
   people: PersonToRender[] | null;
+  errorApi: boolean;
+  filterPeople: PersonToRender[] | null;
 }
 
 export type PeopleResponse = ApiResponse<Person>;

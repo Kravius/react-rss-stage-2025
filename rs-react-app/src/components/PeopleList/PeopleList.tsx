@@ -16,7 +16,7 @@ class PeopleList extends Component<PeopleListProps> {
           <ul className={styles['list_container']}>
             {people.map(({ id, img, name }) => (
               <li className={styles['people_list']} key={id}>
-                <a href="#">
+                <a href={`/people/${id}`}>
                   <img
                     className={styles['person_photo']}
                     src={img}
