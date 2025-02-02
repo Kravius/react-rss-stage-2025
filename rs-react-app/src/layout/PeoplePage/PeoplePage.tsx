@@ -40,10 +40,7 @@ class PeoplePage extends Component<object, State> {
           img,
         };
       });
-
-      this.setState({ people: peopleList });
-      this.setState({ errorApi: false });
-
+      this.setState({ ...this.state, people: peopleList, errorApi: false });
       this.checkLocalStorage();
     } else {
       this.setState({ errorApi: true });
@@ -60,23 +57,25 @@ class PeoplePage extends Component<object, State> {
   onSearch = (searchTerm: string) => {
     const { people } = this.state;
     console.log(people, 'onSearch people');
+    console.log(searchTerm, 'onSearch searchTerm');
     if (!people) return;
+
     const filterPeople = people.filter((person) =>
       person.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
     );
     console.log(filterPeople, 'filterPeople');
-    this.setState({ people: filterPeople });
+    this.setState({ filterPeople: filterPeople });
   };
 
   render(): ReactNode {
-    const { people, errorApi } = this.state;
+    const { filterPeople, errorApi } = this.state;
     return (
       <div className={styles['main_people-container']}>
         <Search onSearch={this.onSearch} />
         {errorApi ? (
           <NoFiles />
-        ) : people ? (
-          <PeopleList people={people} />
+        ) : filterPeople ? (
+          <PeopleList people={filterPeople} />
         ) : (
           <Spinner />
         )}
