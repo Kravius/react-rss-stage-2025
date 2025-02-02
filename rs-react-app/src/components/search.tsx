@@ -19,14 +19,12 @@ class Search extends Component<SearchProps, SearchState> {
   handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value.trim();
     this.setState({ searchTerm });
-    console.log(searchTerm);
   };
 
   handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { searchTerm } = this.state;
     localStorage.setItem('searchTerm', JSON.stringify(searchTerm));
-    console.log(this.props.onSearch(searchTerm), 'searchTerm handleSearch');
     this.props.onSearch(searchTerm);
   };
 
@@ -34,7 +32,6 @@ class Search extends Component<SearchProps, SearchState> {
     const savedSearchValue = localStorage.getItem('searchTerm');
     if (savedSearchValue) {
       const searchValue = JSON.parse(savedSearchValue);
-      console.log(searchValue, 'savedSearchValue1');
       this.setState({ searchTerm: searchValue }, () =>
         this.props.onSearch(searchValue)
       );

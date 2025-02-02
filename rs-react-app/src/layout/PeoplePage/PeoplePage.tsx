@@ -12,6 +12,8 @@ import PeopleList from '../../components/PeopleList/PeopleList';
 import { PeopleResponse, Person, PersonToRender, State } from './type';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/search';
+import { ErrorBTN } from '../../components/ErrorBtn/ErrorBtn';
+import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 
 class PeoplePage extends Component<object, State> {
   constructor(props: object) {
@@ -56,31 +58,31 @@ class PeoplePage extends Component<object, State> {
 
   onSearch = (searchTerm: string) => {
     const { people } = this.state;
-    console.log(people, 'onSearch people');
-    console.log(searchTerm, 'onSearch searchTerm');
     if (!people) return;
 
     const filterPeople = people.filter((person) =>
       person.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
     );
-    console.log(filterPeople, 'filterPeople');
     this.setState({ filterPeople: filterPeople });
   };
 
   render(): ReactNode {
     const { filterPeople, errorApi } = this.state;
     return (
-      <div className={styles['main_people-container']}>
-        <Search onSearch={this.onSearch} />
-        {errorApi ? (
-          <NoFiles />
-        ) : filterPeople ? (
-          <PeopleList people={filterPeople} />
-        ) : (
-          <Spinner />
-        )}
-        <div className={styles['people']}></div>
-      </div>
+      <ErrorBoundary>
+        <div className={styles['main_people-container']}>
+          <Search onSearch={this.onSearch} />
+          {errorApi ? (
+            <NoFiles />
+          ) : filterPeople ? (
+            <PeopleList people={filterPeople} />
+          ) : (
+            <Spinner />
+          )}
+          <div className={styles['people']}></div>
+          <ErrorBTN>Make Error</ErrorBTN>
+        </div>
+      </ErrorBoundary>
     );
   }
 }
