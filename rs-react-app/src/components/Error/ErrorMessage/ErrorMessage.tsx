@@ -1,6 +1,6 @@
-import styles from './NoFiles.module.css';
+import styles from './ErrorMessage.module.css';
 
-const NoFiles: React.FC = () => {
+const ErrorMessage: React.FC = () => {
   return (
     <>
       <h1 className={styles['error_massage']}>No result for your search</h1>
@@ -9,4 +9,4 @@ const NoFiles: React.FC = () => {
 };
 
 //
-export default NoFiles;
+export default ErrorMessage;

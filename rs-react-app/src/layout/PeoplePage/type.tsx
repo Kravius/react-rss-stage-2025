@@ -1,4 +1,4 @@
-interface ApiResponse<T> {
+export interface ApiResponse<T> {
   count: number;
   next: string | null;
   previous: string | null;
@@ -27,6 +27,8 @@ export interface Person {
 export interface PersonToRender extends Omit<Person, 'url'> {
   id: string;
   img: string;
+  // previous: string;
+  // next: string;
 }
 
 export interface State {

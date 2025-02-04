@@ -1,59 +1,41 @@
-import { Component, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { Form, useSubmit } from 'react-router-dom';
 
-interface SearchProps {
-  onSearch: (searchTerm: string) => void;
-}
+const Search: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const submit = useSubmit();
 
-interface SearchState {
-  searchTerm: string;
-}
-
-class Search extends Component<SearchProps, SearchState> {
-  constructor(props: SearchProps) {
-    super(props);
-    this.state = {
-      searchTerm: '',
-    };
-  }
-
-  handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = event.target.value.trim();
-    this.setState({ searchTerm });
-  };
-
-  handleSearch = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const { searchTerm } = this.state;
-    localStorage.setItem('searchTerm', JSON.stringify(searchTerm));
-    this.props.onSearch(searchTerm);
-  };
-
-  componentDidMount() {
+  useEffect(() => {
     const savedSearchValue = localStorage.getItem('searchTerm');
     if (savedSearchValue) {
       const searchValue = JSON.parse(savedSearchValue);
-      this.setState({ searchTerm: searchValue }, () =>
-        this.props.onSearch(searchValue)
-      );
+      setSearchTerm(searchValue);
     }
-  }
+  }, []);
 
-  render() {
-    const { searchTerm } = this.state;
-    return (
-      <div>
-        <form onSubmit={this.handleSearch}>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={this.handleInputChange}
-            placeholder="Search People"
-          />
-          <button type="submit">search</button>
-        </form>
-      </div>
-    );
-  }
-}
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value.trim());
+  };
+
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    submit({ searchTerm }, { method: 'post' });
+    localStorage.setItem('searchTerm', JSON.stringify(searchTerm));
+  };
+
+  return (
+    <div>
+      <Form onSubmit={handleSearch}>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder="Search People"
+        />
+        <button type="submit">Search</button>
+      </Form>
+    </div>
+  );
+};
 
 export default Search;

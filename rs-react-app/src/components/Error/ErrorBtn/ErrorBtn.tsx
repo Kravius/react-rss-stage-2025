@@ -1,39 +1,30 @@
-import React, { Component, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import style from './ErrorBtn.module.css';
 
 type ButtonProps = {
   children?: ReactNode;
-  click?: (ev?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
 
-type State = {
-  error: boolean;
-};
+import { useState } from 'react';
 
-class ErrorBTN extends Component<ButtonProps, State> {
-  constructor(props: ButtonProps) {
-    super(props);
-    this.state = {
-      error: false,
-    };
-  }
+const ErrorBTN: React.FC<ButtonProps> = ({ children }) => {
+  const [error, setError] = useState(false);
 
-  handleError = () => {
-    this.setState({ error: true });
+  const handleError = () => {
+    setError(true);
   };
 
-  render() {
-    if (this.state.error) {
-      throw new Error('Simulated error. You have some error');
-    }
-    return (
-      <div>
-        <button className={style['errorBtn']} onClick={this.handleError}>
-          {this.props.children}
-        </button>
-      </div>
-    );
+  if (error) {
+    throw new Error('Simulated error. You have some error');
   }
-}
 
-export { ErrorBTN };
+  return (
+    <div>
+      <button className={style['errorBtn']} onClick={handleError}>
+        {children}
+      </button>
+    </div>
+  );
+};
+
+export default ErrorBTN;

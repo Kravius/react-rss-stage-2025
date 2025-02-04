@@ -6,6 +6,7 @@
   box-sizing: border-box;
   border-radius: var(--border-radius-small);
   padding: 10px;
+  border: 1px solid rgb(181, 95, 95);
 }
 
 .people_list {
