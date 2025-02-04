@@ -43,7 +43,7 @@ const peopleListWithAllData = async () => {
     const id = getPeopleId(person.url);
     const img = getPeopleImg(id);
     return {
-      name: person.name,
+      ...person,
       id,
       img,
     };
@@ -67,4 +67,13 @@ export const filterPeople = async (searchTerm?: string) => {
     const newPeopleList = peopleList;
     return { newPeopleList, next, previous };
   }
+};
+
+export const getPerson = async (id: string) => {
+  const newPeopleList = (await filterPeople()).newPeopleList.find(
+    (el) => el.id === id
+  );
+  console.log(newPeopleList);
+  // console.log(newPeopleList.newPeopleList.find((el) => el.id === id));
+  return newPeopleList;
 };

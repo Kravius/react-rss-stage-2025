@@ -4,7 +4,9 @@ import './index.css';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorPage404 from './components/Error/ErrorPage404/ErrorPage404.tsx';
-import Person from './components/PeopleList/people.tsx';
+import Person, {
+  loader as loaderPerson,
+} from './components/PeopleList/Person.tsx';
 import {
   loader as loaderPeoplePage,
   action as actionPeoplePage,
@@ -27,9 +29,11 @@ const router = createBrowserRouter([
     action: actionPeoplePage,
 
     children: [
+      { index: true, element: <div>person</div> },
       {
         path: 'people/:peopleId',
         element: <Person />,
+        loader: loaderPerson,
       },
     ],
   },

@@ -45,7 +45,10 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 const PeoplePage = () => {
-  const { newPeopleList, next, previous } = useLoaderData();
+  const { newPeopleList } = useLoaderData();
+
+  //add all next, previous!!
+  // const { newPeopleList, next, previous } = useLoaderData();
 
   const actionData = useActionData() as
     | { newPeopleList: PersonToRender[]; next: string; previous: string }
@@ -55,10 +58,9 @@ const PeoplePage = () => {
   const isLoading = navigation.state === 'submitting';
 
   const [people, setPeople] = useState<PersonToRender[]>(newPeopleList);
-  const [nextPage, setNextPage] = useState<string>(next);
-  const [prevPage, setPrevPage] = useState<string>(previous);
+  // const [nextPage, setNextPage] = useState<string>(next);
+  // const [prevPage, setPrevPage] = useState<string>(previous);
 
-  console.log(prevPage, nextPage);
   // const [error, setError] = useState<boolean>(false);
   // const [loading, setLoading] = useState<boolean>(false);
   // const [isLoadingg, setIsLoading] = useState(true);
@@ -103,8 +105,8 @@ const PeoplePage = () => {
   useEffect(() => {
     if (actionData) {
       setPeople(actionData.newPeopleList);
-      setNextPage(actionData.next || '');
-      setPrevPage(actionData.previous || '');
+      // setNextPage(actionData.next || '');
+      // setPrevPage(actionData.previous || '');
     }
   }, [actionData]);
 
