@@ -4,7 +4,7 @@ import { Component, ReactNode } from 'react';
 
 import { getApiResource } from '../../api';
 import { API_ROOT } from '../../constants/api';
-import NoFiles from '../../components/ErrorMessage';
+import ErrorMessage from '../../components/Error/ErrorMessage/ErrorMessage';
 import { getPeopleId, getPeopleImg } from '../../services/getData';
 import PeopleList from '../../components/PeopleList/PeopleList';
 
@@ -12,8 +12,8 @@ import PeopleList from '../../components/PeopleList/PeopleList';
 import { PeopleResponse, Person, PersonToRender, State } from './type';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/search';
-import { ErrorBTN } from '../../components/ErrorBtn/ErrorBtn';
-import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
+import { ErrorBTN } from '../../components/Error/ErrorBtn/ErrorBtn';
+import { ErrorBoundary } from '../../components/Error/ErrorBoundary/ErrorBoundary';
 
 class PeoplePage extends Component<object, State> {
   constructor(props: object) {
@@ -73,7 +73,7 @@ class PeoplePage extends Component<object, State> {
         <div className={styles['main_people-container']}>
           <Search onSearch={this.onSearch} />
           {errorApi ? (
-            <NoFiles />
+            <ErrorMessage />
           ) : filterPeople ? (
             <PeopleList people={filterPeople} />
           ) : (
