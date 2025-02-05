@@ -1,17 +1,20 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { Form, useSubmit } from 'react-router-dom';
+import { Form, useNavigation, useSearchParams } from 'react-router-dom';
 
 const Search: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigation = useNavigation();
+
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const submit = useSubmit();
 
   useEffect(() => {
     const savedSearchValue = localStorage.getItem('searchTerm');
     if (savedSearchValue) {
       const searchValue = JSON.parse(savedSearchValue);
+
       setSearchTerm(searchValue);
     }
-  }, []);
+  }, [searchParams]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.trim());
@@ -19,8 +22,13 @@ const Search: React.FC = () => {
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    submit({ searchTerm }, { method: 'post' });
     localStorage.setItem('searchTerm', JSON.stringify(searchTerm));
+
+    if (searchTerm !== '') {
+      setSearchParams({ searchTerm: searchTerm });
+    } else {
+      setSearchParams({});
+    }
   };
 
   return (
@@ -32,7 +40,12 @@ const Search: React.FC = () => {
           onChange={handleInputChange}
           placeholder="Search People"
         />
-        <button type="submit">Search</button>
+        <button
+          disabled={navigation.state === 'loading' ? true : false}
+          type="submit"
+        >
+          Search
+        </button>
       </Form>
     </div>
   );

@@ -5,10 +5,8 @@ import { getPerson } from '../../services/filterPeople';
 import { PersonToRender } from '../../layout/PeoplePage/type';
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  // console.log(typeof params.peopleId, 'peopleId');
   try {
     const person = await getPerson(params.peopleId || '');
-    console.log(person, 'person');
     return { person };
   } catch (error) {
     console.log(error);
@@ -18,7 +16,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 const Person: React.FC = () => {
   const { person } = useLoaderData<{ person: PersonToRender }>();
-  console.log(person, 'Person');
   return (
     <>
       <div>

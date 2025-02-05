@@ -12,7 +12,7 @@ const localStorageGetSearch = () => {
   if (savedSearchValue) {
     return JSON.parse(savedSearchValue);
   }
-  return false;
+  return '';
 };
 
 // const filterPeople = (res: PeopleResponse) => {
@@ -48,7 +48,6 @@ const peopleListWithAllData = async () => {
       img,
     };
   });
-  console.log(peopleList, 'peopleList');
   const next = res.next;
   const previous = res.previous;
   return { peopleList, next, previous };
@@ -58,10 +57,10 @@ export const filterPeople = async (searchTerm?: string) => {
   const takeSearchTerm = searchTerm ? searchTerm : localStorageGetSearch();
   const { peopleList, next, previous } = await peopleListWithAllData();
   if (takeSearchTerm) {
+    // console.log(takeSearchTerm, 'takeSearchTerm 61');
     const newPeopleList = peopleList.filter((person) =>
       person.name.toLowerCase().includes(takeSearchTerm.toLowerCase())
     );
-    console.log(newPeopleList, 'filterPeople');
     return { newPeopleList, next, previous };
   } else {
     const newPeopleList = peopleList;
@@ -70,10 +69,9 @@ export const filterPeople = async (searchTerm?: string) => {
 };
 
 export const getPerson = async (id: string) => {
-  const newPeopleList = (await filterPeople()).newPeopleList.find(
+  //peopleListWithAllData что бы получить полный массив
+  const newPeopleList = (await peopleListWithAllData()).peopleList.find(
     (el) => el.id === id
   );
-  console.log(newPeopleList);
-  // console.log(newPeopleList.newPeopleList.find((el) => el.id === id));
   return newPeopleList;
 };

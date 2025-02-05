@@ -9,7 +9,7 @@ import Person, {
 } from './components/PeopleList/Person.tsx';
 import {
   loader as loaderPeoplePage,
-  action as actionPeoplePage,
+  // action as actionPeoplePage,
 } from './layout/PeoplePage/PeoplePage.tsx';
 import { HydrateFallback } from './components/HydrateFallback/HydrateFallback.tsx';
 
@@ -18,7 +18,6 @@ const Root = lazy(() => import('./routers/Root.tsx'));
 const router = createBrowserRouter([
   {
     path: '/',
-    // element: <Root />,
     element: (
       <Suspense fallback={<HydrateFallback />}>
         <Root />
@@ -26,7 +25,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage404 />,
     loader: loaderPeoplePage,
-    action: actionPeoplePage,
+    // action: actionPeoplePage,
 
     children: [
       { index: true, element: <div>person</div> },

@@ -7,42 +7,43 @@ import PeopleList from '../../components/PeopleList/PeopleList';
 
 import { PersonToRender } from './type';
 import Spinner from '../../components/Spinner/Spinner';
-import Search from '../../components/Search';
+import Search from '../../components/Search/Search';
 import ErrorBTN from '../../components/Error/ErrorBtn/ErrorBtn';
 
 import { useEffect, useState } from 'react';
 import {
-  ActionFunctionArgs,
+  // ActionFunctionArgs,
   Outlet,
-  useActionData,
+  // useActionData,
   useLoaderData,
   useNavigation,
 } from 'react-router-dom';
 import { filterPeople } from '../../services/filterPeople';
 
-export async function loader() {
+export async function loader({ request }: { request: Request }) {
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get('searchTerm') || '';
   try {
-    const { newPeopleList, next, previous } = await filterPeople();
-
-    return { newPeopleList, next, previous };
+    const { newPeopleList, next, previous } = await filterPeople(searchTerm);
+    return { newPeopleList, next, previous, searchTerm };
   } catch (error) {
     console.log(error);
     throw new Response('Ошибка загрузки данных', { status: 500 });
   }
 }
 
-export async function action({ request }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const searchTerm = formData.get('searchTerm') as string;
-
-  try {
-    const { newPeopleList, next, previous } = await filterPeople(searchTerm);
-    return { newPeopleList, next, previous };
-  } catch (error) {
-    console.log(error);
-    throw new Response('Ошибка при выполнении поиска', { status: 500 });
-  }
-}
+// export async function action({ request }: ActionFunctionArgs) {
+//   const formData = await request.formData();
+//   const searchTerm = formData.get('searchTerm') as string;
+//   console.log(searchTerm, 'action');
+//   try {
+//     const { newPeopleList, next, previous } = await filterPeople(searchTerm);
+//     return { newPeopleList, next, previous };
+//   } catch (error) {
+//     console.log(error);
+//     throw new Response('Ошибка при выполнении поиска', { status: 500 });
+//   }
+// }
 
 const PeoplePage = () => {
   const { newPeopleList } = useLoaderData();
@@ -50,9 +51,9 @@ const PeoplePage = () => {
   //add all next, previous!!
   // const { newPeopleList, next, previous } = useLoaderData();
 
-  const actionData = useActionData() as
-    | { newPeopleList: PersonToRender[]; next: string; previous: string }
-    | undefined;
+  // const actionData = useActionData() as
+  //   | { newPeopleList: PersonToRender[]; next: string; previous: string }
+  //   | undefined;
 
   const navigation = useNavigation();
   const isLoading = navigation.state === 'submitting';
@@ -103,12 +104,21 @@ const PeoplePage = () => {
   // };
 
   useEffect(() => {
-    if (actionData) {
-      setPeople(actionData.newPeopleList);
+    if (newPeopleList) {
+      setPeople(newPeopleList);
       // setNextPage(actionData.next || '');
       // setPrevPage(actionData.previous || '');
     }
-  }, [actionData]);
+    //после поиска и использования лоудера проверяем какие данные сейчас
+  }, [newPeopleList]);
+
+  // useEffect(() => {
+  //   if (actionData) {
+  //     setPeople(actionData.newPeopleList);
+  //     // setNextPage(actionData.next || '');
+  //     // setPrevPage(actionData.previous || '');
+  //   }
+  // }, [actionData]);
 
   return (
     <div className={styles['main_people-container']}>
