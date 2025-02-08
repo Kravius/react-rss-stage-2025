@@ -26,13 +26,12 @@ export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get('searchTerm') || '';
   const page = url.searchParams.get('page') || '';
-  console.log(page, 'page');
   try {
-    const { newPeopleList, next, previous } = await filterPeople(
+    const { newPeopleList, next, previous, pages } = await filterPeople(
       searchTerm,
       page
     );
-    return { newPeopleList, next, previous, searchTerm };
+    return { newPeopleList, next, previous, searchTerm, pages };
   } catch (error) {
     console.log(error);
     throw new Response('Ошибка загрузки данных', { status: 500 });
@@ -64,11 +63,11 @@ const PeoplePage = () => {
   const navigation = useNavigation();
   //отправляем по адресу
   const navigate = useNavigate();
-  const { newPeopleList, next, previous } = useLoaderData();
-  // const { newPeopleList } = useLoaderData();
+  const { newPeopleList, pages } = useLoaderData();
+  const { next, previous } = pages;
 
   const [searchParams, setSearchParams] = useSearchParams();
-  //add all next, previous!!
+
   const [people, setPeople] = useState<PersonToRender[]>(newPeopleList);
 
   const [nextPage, setNextPage] = useState<string>(next);
@@ -112,6 +111,10 @@ const PeoplePage = () => {
   // };
 
   useEffect(() => {
+    setSearchParams({ page: searchParams.get('page') || '1' });
+  }, []);
+
+  useEffect(() => {
     if (newPeopleList) {
       setPeople(newPeopleList);
       setNextPage(next || '');
@@ -124,7 +127,7 @@ const PeoplePage = () => {
   const goHome = () => {
     localStorage.setItem('searchTerm', '');
     if (!searchParams) {
-      setSearchParams({});
+      setSearchParams({ page: '1' });
     }
     navigate('/');
   };
@@ -132,13 +135,25 @@ const PeoplePage = () => {
   const handleNextPage = () => {
     console.log(nextPage, 'handleNextPage');
     if (nextPage) {
-      setSearchParams({ page: nextPage });
+      // setSearchParams((prev) => ({ ...prev, page: nextPage }));
+      setSearchParams((prev) => ({
+        ...Object.fromEntries(prev),
+        page: nextPage,
+      }));
     }
   };
 
   const handlePrevPage = () => {
     if (prevPage) {
-      setSearchParams({ page: prevPage });
+      // setSearchParams((prev) => ({ ...prev, page: prevPage }));
+      setSearchParams((prev) => {
+        console.log(prev, 'prev');
+        console.log(Object.fromEntries(prev), 'Object');
+        return {
+          ...Object.fromEntries(prev),
+          page: prevPage,
+        };
+      });
     }
   };
 

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { PersonToRender } from '../../layout/PeoplePage/type';
 
 interface PeopleListProps {
@@ -6,16 +6,24 @@ interface PeopleListProps {
 }
 
 import styles from './PeopleList.module.css';
+import { useEffect } from 'react';
 
 const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
-  // console.log(people[0].id);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
   return (
     <div className={styles['list_container']}>
       <ul>
         {people.map(({ id, img, name }) => (
           <li className={styles['people_list']} key={id}>
             {/* <Link to={`/people/${id}`}> */}
-            <Link to={`/people/${id}`}>
+            <Link
+              to={{
+                pathname: `/people/${id}`,
+                search: searchParams.toString(),
+              }}
+            >
               <img
                 className={styles['person_photo']}
                 src={img}
@@ -31,31 +39,3 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
 };
 
 export default PeopleList;
-
-// class PeopleList extends Component<PeopleListProps> {
-//   render(): ReactNode {
-//     const { people } = this.props;
-//     return (
-//       <>
-//         {
-//           <ul className={styles['list_container']}>
-//             {people.map(({ id, img, name }) => (
-//               <li className={styles['people_list']} key={id}>
-//                 <a href={`/people/${id}`}>
-//                   <img
-//                     className={styles['person_photo']}
-//                     src={img}
-//                     alt="character"
-//                   />
-//                   <span>{name}</span>
-//                 </a>
-//               </li>
-//             ))}
-//           </ul>
-//         }
-//       </>
-//     );
-//   }
-// }
-
-// export default PeopleList;
