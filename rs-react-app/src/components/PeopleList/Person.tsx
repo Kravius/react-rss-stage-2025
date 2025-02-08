@@ -1,4 +1,3 @@
-
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import { getPerson } from '../../services/filterPeople';
 import { PersonToRender } from '../../layout/PeoplePage/type';

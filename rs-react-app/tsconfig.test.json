@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "types": ["jest", "node"], // Добавляем типы для Jest и Node.js
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "ESNext",
+    "target": "ESNext",
+    "jsx": "react-jsx", // Включаем поддержку JSX
+    "strict": true,
+    "esModuleInterop": true, // Включаем esModuleInterop
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
