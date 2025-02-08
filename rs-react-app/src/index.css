@@ -1,0 +1,13 @@
+:root {
+  --font-family-main: sans-serif;
+
+  --border-radius-small: 5px;
+
+  --color-dark-gray-main: rgb(82, 77, 77);
+  --color-white: #fff;
+}
+
+body {
+  background-color: var(--color-dark-gray-main);
+  font-family: var(--font-family-main);
+}
