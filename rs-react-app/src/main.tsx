@@ -12,6 +12,7 @@ import {
   // action as actionPeoplePage,
 } from './layout/PeoplePage/PeoplePage.tsx';
 import { HydrateFallback } from './components/HydrateFallback/HydrateFallback.tsx';
+import PersonStartScreen from './components/PersonStartScreen/PersonStartScreen.tsx';
 
 const Root = lazy(() => import('./routers/Root.tsx'));
 
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
     // action: actionPeoplePage,
 
     children: [
-      { index: true, element: <div>person</div> },
+      { index: true, element: <PersonStartScreen /> },
       {
         path: 'people/:peopleId',
         element: <Person />,

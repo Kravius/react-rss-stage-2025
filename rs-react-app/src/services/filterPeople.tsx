@@ -36,9 +36,11 @@ const localStorageGetSearch = () => {
 //   // setPreviousprevious({ previous: res.previous });
 // };
 
-const peopleListWithAllData = async () => {
-  const res: PeopleResponse = await getApiResource(API_ROOT);
-
+const peopleListWithAllData = async (page?: string) => {
+  const url = page ? page : API_ROOT;
+  console.log(page, 'peopleListWithAllData');
+  const res: PeopleResponse = await getApiResource(url);
+  console.log(res, 'res');
   const peopleList: PersonToRender[] = res.results.map((person: Person) => {
     const id = getPeopleId(person.url);
     const img = getPeopleImg(id);
@@ -53,11 +55,10 @@ const peopleListWithAllData = async () => {
   return { peopleList, next, previous };
 };
 
-export const filterPeople = async (searchTerm?: string) => {
+export const filterPeople = async (searchTerm?: string, page?: string) => {
   const takeSearchTerm = searchTerm ? searchTerm : localStorageGetSearch();
-  const { peopleList, next, previous } = await peopleListWithAllData();
+  const { peopleList, next, previous } = await peopleListWithAllData(page);
   if (takeSearchTerm) {
-    // console.log(takeSearchTerm, 'takeSearchTerm 61');
     const newPeopleList = peopleList.filter((person) =>
       person.name.toLowerCase().includes(takeSearchTerm.toLowerCase())
     );
@@ -69,6 +70,13 @@ export const filterPeople = async (searchTerm?: string) => {
 };
 
 export const getPerson = async (id: string) => {
+  const storedPeople = localStorage.getItem('peopleData');
+  if (storedPeople) {
+    const peopleList: PersonToRender[] = JSON.parse(storedPeople);
+    const person = peopleList.find((el) => el.id === id);
+    if (person) return person;
+  }
+
   //peopleListWithAllData что бы получить полный массив
   const newPeopleList = (await peopleListWithAllData()).peopleList.find(
     (el) => el.id === id

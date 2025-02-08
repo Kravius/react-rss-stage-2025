@@ -8,11 +8,13 @@ interface PeopleListProps {
 import styles from './PeopleList.module.css';
 
 const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
+  // console.log(people[0].id);
   return (
     <div className={styles['list_container']}>
       <ul>
         {people.map(({ id, img, name }) => (
           <li className={styles['people_list']} key={id}>
+            {/* <Link to={`/people/${id}`}> */}
             <Link to={`/people/${id}`}>
               <img
                 className={styles['person_photo']}

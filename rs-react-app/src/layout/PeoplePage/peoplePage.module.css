@@ -7,6 +7,8 @@
   margin: auto 20px;
 }
 
-.person{
+.person {
+  display: flex;
+  width: 800px;
   background-color: aqua;
 }

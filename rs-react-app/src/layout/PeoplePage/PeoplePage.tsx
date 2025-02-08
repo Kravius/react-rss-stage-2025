@@ -16,15 +16,22 @@ import {
   Outlet,
   // useActionData,
   useLoaderData,
+  useNavigate,
   useNavigation,
+  useSearchParams,
 } from 'react-router-dom';
 import { filterPeople } from '../../services/filterPeople';
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get('searchTerm') || '';
+  const page = url.searchParams.get('page') || '';
+  console.log(page, 'page');
   try {
-    const { newPeopleList, next, previous } = await filterPeople(searchTerm);
+    const { newPeopleList, next, previous } = await filterPeople(
+      searchTerm,
+      page
+    );
     return { newPeopleList, next, previous, searchTerm };
   } catch (error) {
     console.log(error);
@@ -44,27 +51,28 @@ export async function loader({ request }: { request: Request }) {
 //     throw new Response('Ошибка при выполнении поиска', { status: 500 });
 //   }
 // }
+// useEffect(() => {
+//   if (actionData) {
+//     setPeople(actionData.newPeopleList);
+//     // setNextPage(actionData.next || '');
+//     // setPrevPage(actionData.previous || '');
+//   }
+// }, [actionData]);
 
 const PeoplePage = () => {
-  const { newPeopleList } = useLoaderData();
-
-  //add all next, previous!!
-  // const { newPeopleList, next, previous } = useLoaderData();
-
-  // const actionData = useActionData() as
-  //   | { newPeopleList: PersonToRender[]; next: string; previous: string }
-  //   | undefined;
-
+  //проверка загрузки
   const navigation = useNavigation();
-  const isLoading = navigation.state === 'submitting';
+  //отправляем по адресу
+  const navigate = useNavigate();
+  const { newPeopleList, next, previous } = useLoaderData();
+  // const { newPeopleList } = useLoaderData();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  //add all next, previous!!
   const [people, setPeople] = useState<PersonToRender[]>(newPeopleList);
-  // const [nextPage, setNextPage] = useState<string>(next);
-  // const [prevPage, setPrevPage] = useState<string>(previous);
 
-  // const [error, setError] = useState<boolean>(false);
-  // const [loading, setLoading] = useState<boolean>(false);
-  // const [isLoadingg, setIsLoading] = useState(true);
+  const [nextPage, setNextPage] = useState<string>(next);
+  const [prevPage, setPrevPage] = useState<string>(previous);
 
   // // const filterPeople = (res: PeopleResponse) => {
   // //   const peopleList: PersonToRender[] = res.results.map((person: Person) => {
@@ -106,31 +114,56 @@ const PeoplePage = () => {
   useEffect(() => {
     if (newPeopleList) {
       setPeople(newPeopleList);
-      // setNextPage(actionData.next || '');
-      // setPrevPage(actionData.previous || '');
+      setNextPage(next || '');
+      setPrevPage(previous || '');
+      localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
     }
     //после поиска и использования лоудера проверяем какие данные сейчас
-  }, [newPeopleList]);
+  }, [newPeopleList, next, previous]);
 
-  // useEffect(() => {
-  //   if (actionData) {
-  //     setPeople(actionData.newPeopleList);
-  //     // setNextPage(actionData.next || '');
-  //     // setPrevPage(actionData.previous || '');
-  //   }
-  // }, [actionData]);
+  const goHome = () => {
+    localStorage.setItem('searchTerm', '');
+    if (!searchParams) {
+      setSearchParams({});
+    }
+    navigate('/');
+  };
+
+  const handleNextPage = () => {
+    console.log(nextPage, 'handleNextPage');
+    if (nextPage) {
+      setSearchParams({ page: nextPage });
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (prevPage) {
+      setSearchParams({ page: prevPage });
+    }
+  };
 
   return (
     <div className={styles['main_people-container']}>
       <div>
-        <Search />
-        {isLoading ? (
+        <div>
+          <Search />
+          <button onClick={() => goHome()}>Home Page</button>
+        </div>
+        {navigation.state === 'loading' ? (
           <Spinner />
         ) : people.length ? (
           <PeopleList people={people} />
         ) : (
           <ErrorMessage />
         )}
+        <div className={styles['pagination']}>
+          <button onClick={handlePrevPage} disabled={!prevPage}>
+            Previous
+          </button>
+          <button onClick={handleNextPage} disabled={!nextPage}>
+            Next
+          </button>
+        </div>
         <div>
           <ErrorBTN>Error click</ErrorBTN>
         </div>
