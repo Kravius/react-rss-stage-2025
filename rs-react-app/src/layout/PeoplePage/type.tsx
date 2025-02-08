@@ -27,8 +27,6 @@ export interface Person {
 export interface PersonToRender extends Omit<Person, 'url'> {
   id: string;
   img: string;
-  // previous: string;
-  // next: string;
 }
 
 export interface State {

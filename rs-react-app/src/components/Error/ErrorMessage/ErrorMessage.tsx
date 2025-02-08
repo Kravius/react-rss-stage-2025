@@ -8,5 +8,4 @@ const ErrorMessage: React.FC = () => {
   );
 };
 
-//
 export default ErrorMessage;

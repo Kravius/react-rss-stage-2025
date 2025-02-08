@@ -1,7 +1,5 @@
 import styles from './peoplePage.module.css';
 
-// import { Component, ReactNode } from 'react';
-
 import ErrorMessage from '../../components/Error/ErrorMessage/ErrorMessage';
 import PeopleList from '../../components/PeopleList/PeopleList';
 
@@ -12,9 +10,7 @@ import ErrorBTN from '../../components/Error/ErrorBtn/ErrorBtn';
 
 import { useEffect, useState } from 'react';
 import {
-  // ActionFunctionArgs,
   Outlet,
-  // useActionData,
   useLoaderData,
   useNavigate,
   useNavigation,
@@ -27,36 +23,13 @@ export async function loader({ request }: { request: Request }) {
   const searchTerm = url.searchParams.get('searchTerm') || '';
   const page = url.searchParams.get('page') || '';
   try {
-    const { newPeopleList, next, previous, pages } = await filterPeople(
-      searchTerm,
-      page
-    );
-    return { newPeopleList, next, previous, searchTerm, pages };
+    const { newPeopleList, pages } = await filterPeople({ searchTerm, page });
+    return { newPeopleList, searchTerm, pages };
   } catch (error) {
     console.log(error);
     throw new Response('Ошибка загрузки данных', { status: 500 });
   }
 }
-
-// export async function action({ request }: ActionFunctionArgs) {
-//   const formData = await request.formData();
-//   const searchTerm = formData.get('searchTerm') as string;
-//   console.log(searchTerm, 'action');
-//   try {
-//     const { newPeopleList, next, previous } = await filterPeople(searchTerm);
-//     return { newPeopleList, next, previous };
-//   } catch (error) {
-//     console.log(error);
-//     throw new Response('Ошибка при выполнении поиска', { status: 500 });
-//   }
-// }
-// useEffect(() => {
-//   if (actionData) {
-//     setPeople(actionData.newPeopleList);
-//     // setNextPage(actionData.next || '');
-//     // setPrevPage(actionData.previous || '');
-//   }
-// }, [actionData]);
 
 const PeoplePage = () => {
   //проверка загрузки
@@ -64,96 +37,44 @@ const PeoplePage = () => {
   //отправляем по адресу
   const navigate = useNavigate();
   const { newPeopleList, pages } = useLoaderData();
-  const { next, previous } = pages;
+  const { next, previous, current } = pages;
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [people, setPeople] = useState<PersonToRender[]>(newPeopleList);
 
-  const [nextPage, setNextPage] = useState<string>(next);
-  const [prevPage, setPrevPage] = useState<string>(previous);
-
-  // // const filterPeople = (res: PeopleResponse) => {
-  // //   const peopleList: PersonToRender[] = res.results.map((person: Person) => {
-  // //     const id = getPeopleId(person.url);
-  // //     const img = getPeopleImg(id);
-  // //     return {
-  // //       name: person.name,
-  // //       id,
-  // //       img,
-  // //     };
-  // //   });
-  // //   return peopleList;
-  // //   // setPeople(peopleList);
-  // //   // setFilterPeople(peopleList);
-  // //   // setErrorApi(false);
-  // //   // checkLocalStorage(peopleList);
-
-  // //   //after add this
-  // //   // setNextPage({ next: res.next });
-  // //   // setPrevPage({ previous: res.previous });
-  // // };
-
-  // const fetchResource = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const { newPeopleList, next, previous } = await filterPeople();
-
-  //     setPeople(newPeopleList);
-  //     next ? setNextPage(next) : setNextPage('');
-  //     previous ? setPrevPage(previous) : setPrevPage('');
-  //   } catch (error) {
-  //     setError(true);
-  //   } finally {
-  //     setLoading(false);
-  //     setIsLoading(false);
-  //   }
-  // };
+  const [nextPage, setNextPage] = useState<string | null>(next);
+  const [prevPage, setPrevPage] = useState<string | null>(previous);
 
   useEffect(() => {
     setSearchParams({ page: searchParams.get('page') || '1' });
   }, []);
 
   useEffect(() => {
-    if (newPeopleList) {
+    if (JSON.stringify(newPeopleList) !== localStorage.getItem('peopleData')) {
       setPeople(newPeopleList);
-      setNextPage(next || '');
-      setPrevPage(previous || '');
-      localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
     }
+    setNextPage(next || '');
+    setPrevPage(previous || '');
+    localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
+
     //после поиска и использования лоудера проверяем какие данные сейчас
   }, [newPeopleList, next, previous]);
 
   const goHome = () => {
     localStorage.setItem('searchTerm', '');
     if (!searchParams) {
-      setSearchParams({ page: '1' });
+      setSearchParams({ page: current });
     }
     navigate('/');
   };
 
-  const handleNextPage = () => {
-    console.log(nextPage, 'handleNextPage');
-    if (nextPage) {
-      // setSearchParams((prev) => ({ ...prev, page: nextPage }));
+  const handlePageChange = (newPage: string | null) => {
+    if (newPage) {
       setSearchParams((prev) => ({
         ...Object.fromEntries(prev),
-        page: nextPage,
+        page: newPage,
       }));
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (prevPage) {
-      // setSearchParams((prev) => ({ ...prev, page: prevPage }));
-      setSearchParams((prev) => {
-        console.log(prev, 'prev');
-        console.log(Object.fromEntries(prev), 'Object');
-        return {
-          ...Object.fromEntries(prev),
-          page: prevPage,
-        };
-      });
     }
   };
 
@@ -172,10 +93,16 @@ const PeoplePage = () => {
           <ErrorMessage />
         )}
         <div className={styles['pagination']}>
-          <button onClick={handlePrevPage} disabled={!prevPage}>
+          <button
+            onClick={() => handlePageChange(prevPage)}
+            disabled={!prevPage}
+          >
             Previous
           </button>
-          <button onClick={handleNextPage} disabled={!nextPage}>
+          <button
+            onClick={() => handlePageChange(nextPage)}
+            disabled={!nextPage}
+          >
             Next
           </button>
         </div>

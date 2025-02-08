@@ -1,16 +1,19 @@
-// import styles from './Person.module.css';
 
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 import { getPerson } from '../../services/filterPeople';
 import { PersonToRender } from '../../layout/PeoplePage/type';
 
-// export async function loader({ params }: LoaderFunctionArgs) {
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const page = url.searchParams.get('page');
-  console.log(url.toString(), 'Person');
+
   try {
-    const person = await getPerson(params.peopleId || '');
+    const person = await getPerson({
+      id: params.peopleId || '',
+      page: page || '',
+    });
+    localStorage.setItem('person', JSON.stringify(person));
+    console.log(person, 'personloader');
     return { person };
   } catch (error) {
     console.log(error);

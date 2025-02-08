@@ -7,10 +7,7 @@ import ErrorPage404 from './components/Error/ErrorPage404/ErrorPage404.tsx';
 import Person, {
   loader as loaderPerson,
 } from './components/PeopleList/Person.tsx';
-import {
-  loader as loaderPeoplePage,
-  // action as actionPeoplePage,
-} from './layout/PeoplePage/PeoplePage.tsx';
+import { loader as loaderPeoplePage } from './layout/PeoplePage/PeoplePage.tsx';
 import { HydrateFallback } from './components/HydrateFallback/HydrateFallback.tsx';
 import PersonStartScreen from './components/PersonStartScreen/PersonStartScreen.tsx';
 
@@ -26,7 +23,6 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage404 />,
     loader: loaderPeoplePage,
-    // action: actionPeoplePage,
 
     children: [
       { index: true, element: <PersonStartScreen /> },
@@ -37,17 +33,17 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: '*',
+    element: <ErrorPage404 />,
+  },
 ]);
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
-      {/* <ErrorBoundary> */}
-      {/* <Suspense fallback={<HydrateFallback />}> */}
       <RouterProvider router={router} />
-      {/* </Suspense> */}
-      {/* </ErrorBoundary> */}
     </StrictMode>
   );
 } else {
