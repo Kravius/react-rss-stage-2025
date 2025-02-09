@@ -1,90 +1,120 @@
 import styles from './peoplePage.module.css';
 
-import { Component, ReactNode } from 'react';
-
-import { getApiResource } from '../../api';
-import { API_ROOT } from '../../constants/api';
-import NoFiles from '../../components/ErrorMessage';
-import { getPeopleId, getPeopleImg } from '../../services/getData';
+import ErrorMessage from '../../components/Error/ErrorMessage/ErrorMessage';
 import PeopleList from '../../components/PeopleList/PeopleList';
 
-//type
-import { PeopleResponse, Person, PersonToRender, State } from './type';
+import { PersonToRender } from './type';
 import Spinner from '../../components/Spinner/Spinner';
-import Search from '../../components/search';
-import { ErrorBTN } from '../../components/ErrorBtn/ErrorBtn';
-import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
+import Search from '../../components/Search/Search';
+import ErrorBTN from '../../components/Error/ErrorBtn/ErrorBtn';
 
-class PeoplePage extends Component<object, State> {
-  constructor(props: object) {
-    super(props);
-    this.state = {
-      people: null,
-      errorApi: false,
-      filterPeople: null,
-    };
-  }
+import { useEffect, useState } from 'react';
+import {
+  Outlet,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useSearchParams,
+} from 'react-router-dom';
+import { filterPeople } from '../../services/filterPeople';
 
-  componentDidMount() {
-    this.getResource(API_ROOT);
-  }
-
-  getResource = async (url: string) => {
-    const res: PeopleResponse = await getApiResource(url);
-
-    if (res) {
-      const peopleList: PersonToRender[] = res.results.map((person: Person) => {
-        const id = getPeopleId(person.url);
-        const img = getPeopleImg(id);
-        return {
-          name: person.name,
-          id,
-          img,
-        };
-      });
-      this.setState({ ...this.state, people: peopleList, errorApi: false });
-      this.checkLocalStorage();
-    } else {
-      this.setState({ errorApi: true });
-    }
-  };
-
-  checkLocalStorage() {
-    const searchTerm = localStorage.getItem('searchTerm');
-    if (searchTerm) {
-      this.onSearch(JSON.parse(searchTerm));
-    }
-  }
-
-  onSearch = (searchTerm: string) => {
-    const { people } = this.state;
-    if (!people) return;
-
-    const filterPeople = people.filter((person) =>
-      person.name.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
-    );
-    this.setState({ filterPeople: filterPeople });
-  };
-
-  render(): ReactNode {
-    const { filterPeople, errorApi } = this.state;
-    return (
-      <ErrorBoundary>
-        <div className={styles['main_people-container']}>
-          <Search onSearch={this.onSearch} />
-          {errorApi ? (
-            <NoFiles />
-          ) : filterPeople ? (
-            <PeopleList people={filterPeople} />
-          ) : (
-            <Spinner />
-          )}
-          <div className={styles['people']}></div>
-          <ErrorBTN>Make Error</ErrorBTN>
-        </div>
-      </ErrorBoundary>
-    );
+export async function loader({ request }: { request: Request }) {
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get('searchTerm') || '';
+  const page = url.searchParams.get('page') || '';
+  try {
+    const { newPeopleList, pages } = await filterPeople({ searchTerm, page });
+    return { newPeopleList, searchTerm, pages };
+  } catch (error) {
+    console.log(error);
+    throw new Response('Ошибка загрузки данных', { status: 500 });
   }
 }
+
+const PeoplePage = () => {
+  //проверка загрузки
+  const navigation = useNavigation();
+  //отправляем по адресу
+  const navigate = useNavigate();
+  const { newPeopleList, pages } = useLoaderData();
+  const { next, previous, current } = pages;
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [people, setPeople] = useState<PersonToRender[]>(newPeopleList);
+
+  const [nextPage, setNextPage] = useState<string | null>(next);
+  const [prevPage, setPrevPage] = useState<string | null>(previous);
+
+  useEffect(() => {
+    setSearchParams({ page: searchParams.get('page') || '1' });
+  }, []);
+
+  useEffect(() => {
+    if (JSON.stringify(newPeopleList) !== localStorage.getItem('peopleData')) {
+      setPeople(newPeopleList);
+    }
+    setNextPage(next || '');
+    setPrevPage(previous || '');
+    localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
+
+    //после поиска и использования лоудера проверяем какие данные сейчас
+  }, [newPeopleList, next, previous]);
+
+  const goHome = () => {
+    localStorage.setItem('searchTerm', '');
+    if (!searchParams) {
+      setSearchParams({ page: current });
+    }
+    navigate('/');
+  };
+
+  const handlePageChange = (newPage: string | null) => {
+    if (newPage) {
+      setSearchParams((prev) => ({
+        ...Object.fromEntries(prev),
+        page: newPage,
+      }));
+    }
+  };
+
+  return (
+    <div className={styles['main_people-container']}>
+      <div>
+        <div>
+          <Search />
+          <button onClick={() => goHome()}>Home Page</button>
+        </div>
+        {navigation.state === 'loading' ? (
+          <Spinner />
+        ) : people.length ? (
+          <PeopleList people={people} />
+        ) : (
+          <ErrorMessage />
+        )}
+        <div className={styles['pagination']}>
+          <button
+            onClick={() => handlePageChange(prevPage)}
+            disabled={!prevPage}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => handlePageChange(nextPage)}
+            disabled={!nextPage}
+          >
+            Next
+          </button>
+        </div>
+        <div>
+          <ErrorBTN>Error click</ErrorBTN>
+        </div>
+      </div>
+      <div className={styles['person']}>
+        <Outlet />
+      </div>
+    </div>
+  );
+};
 
 export default PeoplePage;

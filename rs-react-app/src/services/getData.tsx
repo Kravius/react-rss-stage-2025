@@ -16,3 +16,11 @@ const getID = (url: string) => {
 export function getPeopleImg(id: string) {
   return `${VISUALGUIDE_ROOT_IMG}/${id}.jpg`;
 }
+
+export const getPage = (fullUrl: string | null) => {
+  if (!fullUrl) return null;
+  else {
+    const page = new URL(fullUrl);
+    return page.searchParams.get('page');
+  }
+};
