@@ -1,8 +1,10 @@
+import { baseApi } from '../api';
 import {
   SWAPI_PEOPLE,
   SWAPI_ROOT,
   VISUALGUIDE_ROOT_IMG,
 } from '../constants/api';
+import { PeopleResponse } from '../layout/PeoplePage/type';
 
 export const getPeopleId = (url: string) => {
   return getID(url);
@@ -24,3 +26,12 @@ export const getPage = (fullUrl: string | null) => {
     return page.searchParams.get('page');
   }
 };
+
+export const userApi = baseApi.injectEndpoints({
+  endpoints: (create) => ({
+    getUsers: create.query<PeopleResponse, undefined>({
+      query: () => '',
+    }),
+  }),
+  overrideExisting: true,
+});

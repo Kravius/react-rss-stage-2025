@@ -23,6 +23,7 @@ const localStorageGetSearch = () => {
 
 const peopleListWithAllData = async (page?: string) => {
   const url = `${API_ROOT}/?page=${page}`;
+
   const res: PeopleResponse = await getApiResource(url);
   const peopleList: PersonToRender[] = res.results.map((person: Person) => {
     const id = getPeopleId(person.url);
@@ -41,6 +42,23 @@ const peopleListWithAllData = async (page?: string) => {
   };
 
   return { peopleList, pages };
+};
+
+export const peopleData = (data: PeopleResponse | undefined) => {
+  if (!data) {
+    return;
+  }
+  const peopleList: PersonToRender[] = data.results.map((person: Person) => {
+    const id = getPeopleId(person.url);
+    const img = getPeopleImg(id);
+    return {
+      ...person,
+      id,
+      img,
+    };
+  });
+
+  return peopleList;
 };
 
 export const filterPeople = async ({

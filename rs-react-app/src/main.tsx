@@ -11,6 +11,9 @@ import { loader as loaderPeoplePage } from './layout/PeoplePage/PeoplePage.tsx';
 import { HydrateFallback } from './components/HydrateFallback/HydrateFallback.tsx';
 import PersonStartScreen from './components/PersonStartScreen/PersonStartScreen.tsx';
 
+import { Provider } from 'react-redux';
+import { store } from './store.ts';
+
 const Root = lazy(() => import('./routers/Root.tsx'));
 
 const router = createBrowserRouter([
@@ -43,7 +46,9 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
     </StrictMode>
   );
 } else {

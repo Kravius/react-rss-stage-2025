@@ -27,6 +27,10 @@ export interface Person {
 export interface PersonToRender extends Omit<Person, 'url'> {
   id: string;
   img: string;
+  page?: {
+    next: string | null;
+    previous: string | null;
+  };
 }
 
 export interface State {
@@ -34,5 +38,14 @@ export interface State {
   errorApi: boolean;
   filterPeople: PersonToRender[] | null;
 }
+
+export type PeopleState = {
+  people: PersonToRender[] | null;
+  person: PersonToRender;
+  page?: {
+    next: string | null;
+    previous: string | null;
+  };
+};
 
 export type PeopleResponse = ApiResponse<Person>;

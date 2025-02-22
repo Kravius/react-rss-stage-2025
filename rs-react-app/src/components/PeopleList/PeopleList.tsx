@@ -6,12 +6,16 @@ interface PeopleListProps {
 }
 
 import styles from './PeopleList.module.css';
+import { useTheme } from '../../services/ThemeContex';
 
 const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
   const [searchParams] = useSearchParams();
+  const { isDark } = useTheme();
 
   return (
-    <div className={styles['list_container']}>
+    <div
+      className={`${styles['list_container']} ${styles[isDark ? 'dark' : '']}`}
+    >
       <ul>
         {people.map(({ id, img, name }) => (
           <li className={styles['people_list']} key={id}>

@@ -3,7 +3,7 @@ import styles from './peoplePage.module.css';
 import ErrorMessage from '../../components/Error/ErrorMessage/ErrorMessage';
 import PeopleList from '../../components/PeopleList/PeopleList';
 
-import { PersonToRender } from './type';
+// import { PersonToRender } from './type';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import ErrorBTN from '../../components/Error/ErrorBtn/ErrorBtn';
@@ -16,32 +16,58 @@ import {
   useNavigation,
   useSearchParams,
 } from 'react-router-dom';
-import { filterPeople } from '../../services/filterPeople';
+import { filterPeople, peopleData } from '../../services/filterPeople';
+import { peopleSlice } from '../../components/PeopleList/people.slice';
+
+import { useAppDispatch } from '../../store';
+// import { store, useAppDispatch, useAppSelector } from '../../store';
+import { userApi } from '../../services/getData';
+import { useTheme } from '../../services/ThemeContex';
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get('searchTerm') || '';
   const page = url.searchParams.get('page') || '';
+
   try {
-    const { newPeopleList, pages } = await filterPeople({ searchTerm, page });
-    return { newPeopleList, searchTerm, pages };
+    const { pages } = await filterPeople({ searchTerm, page });
+    return { searchTerm, pages };
   } catch (error) {
     console.log(error);
     throw new Response('Ошибка загрузки данных', { status: 500 });
   }
 }
 
+// const people = [
+//   {
+//     name: 'Luke Skywalker',
+//     height: '172',
+//     mass: '77',
+//     hair_color: 'blond',
+//   },
+// ];
+
 const PeoplePage = () => {
+  const { isDark, toggleTheme } = useTheme();
   //проверка загрузки
   const navigation = useNavigation();
   //отправляем по адресу
   const navigate = useNavigate();
-  const { newPeopleList, pages } = useLoaderData();
+  //old
+  // const { newPeopleList, pages } = useLoaderData();
+  const { pages } = useLoaderData();
   const { next, previous, current } = pages;
-
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [people, setPeople] = useState<PersonToRender[]>(newPeopleList);
+  const { data } = userApi.useGetUsersQuery();
+
+  const people = peopleData(data);
+  const dispatch = useAppDispatch();
+  dispatch(peopleSlice.actions.putToStored(people || []));
+  console.log(1);
+
+  // const usersFromStore = useAppSelector((state) => state.people);
+  // console.log(usersFromStore);
 
   const [nextPage, setNextPage] = useState<string | null>(next);
   const [prevPage, setPrevPage] = useState<string | null>(previous);
@@ -50,16 +76,23 @@ const PeoplePage = () => {
     setSearchParams({ page: searchParams.get('page') || '1' });
   }, []);
 
+  // useEffect(() => {
+  //   if (JSON.stringify(newPeopleList) !== localStorage.getItem('peopleData')) {
+  //     setPeople(newPeopleList);
+  //   }
+  //   setNextPage(next || '');
+  //   setPrevPage(previous || '');
+  //   localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
+
+  //   //после поиска и использования лоудера проверяем какие данные сейчас
+  // }, [newPeopleList, next, previous]);
+
   useEffect(() => {
-    if (JSON.stringify(newPeopleList) !== localStorage.getItem('peopleData')) {
-      setPeople(newPeopleList);
-    }
     setNextPage(next || '');
     setPrevPage(previous || '');
-    localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
 
     //после поиска и использования лоудера проверяем какие данные сейчас
-  }, [newPeopleList, next, previous]);
+  }, [next, previous]);
 
   const goHome = () => {
     localStorage.setItem('searchTerm', '');
@@ -79,15 +112,20 @@ const PeoplePage = () => {
   };
 
   return (
-    <div className={styles['main_people-container']}>
+    <div
+      className={`${styles['main_people-container']} ${styles[isDark ? 'dark' : '']}`}
+    >
       <div>
         <div>
+          <button onClick={toggleTheme}>
+            {isDark ? 'turn light' : 'turn dark'}
+          </button>
           <Search />
           <button onClick={() => goHome()}>Home Page</button>
         </div>
         {navigation.state === 'loading' ? (
           <Spinner />
-        ) : people.length ? (
+        ) : people?.length ? (
           <PeopleList people={people} />
         ) : (
           <ErrorMessage />
@@ -110,7 +148,7 @@ const PeoplePage = () => {
           <ErrorBTN>Error click</ErrorBTN>
         </div>
       </div>
-      <div className={styles['person']}>
+      <div className={`${styles['person']} ${styles[isDark ? 'dark' : '']}`}>
         <Outlet />
       </div>
     </div>

@@ -1,14 +1,28 @@
 .main_people-container {
   display: flex;
-  /* flex-direction: column; */
   border: 1px solid rgb(236, 146, 146);
-  /* width: 150px; */
-  /* justify-content: center; */
   margin: auto 20px;
+
+  &.dark {
+    background-color: var(--color-isDark-theme);
+
+    & p,
+    h1,
+    h3 {
+      color: var(--color-isDark-them-word);
+    }
+    & button {
+      background-color: var(--color-isDark-them-btn);
+    }
+  }
 }
 
 .person {
   display: flex;
   width: 800px;
   background-color: aqua;
+
+  &.dark {
+    background-color: rgb(51, 67, 70);
+  }
 }
