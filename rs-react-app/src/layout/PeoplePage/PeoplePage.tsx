@@ -21,7 +21,7 @@ import { peopleSlice } from '../../components/PeopleList/people.slice';
 
 import { useAppDispatch } from '../../store';
 // import { store, useAppDispatch, useAppSelector } from '../../store';
-import { userApi } from '../../services/getData';
+import { useGetUsersByParamsSearchQuery } from '../../services/getData';
 import { useTheme } from '../../services/ThemeContex';
 
 export async function loader({ request }: { request: Request }) {
@@ -31,7 +31,7 @@ export async function loader({ request }: { request: Request }) {
 
   try {
     const { pages } = await filterPeople({ searchTerm, page });
-    return { searchTerm, pages };
+    return { searchTerm, page, pages };
   } catch (error) {
     console.log(error);
     throw new Response('Ошибка загрузки данных', { status: 500 });
@@ -55,37 +55,29 @@ const PeoplePage = () => {
   const navigate = useNavigate();
   //old
   // const { newPeopleList, pages } = useLoaderData();
-  const { pages } = useLoaderData();
+
+  const { pages, searchTerm, page } = useLoaderData();
   const { next, previous, current } = pages;
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const { data } = userApi.useGetUsersQuery();
+  console.log(searchParams);
+  const { data } = useGetUsersByParamsSearchQuery({
+    page,
+    search: searchTerm,
+  });
 
   const people = peopleData(data);
   const dispatch = useAppDispatch();
   dispatch(peopleSlice.actions.putToStored(people || []));
-  console.log(1);
-
-  // const usersFromStore = useAppSelector((state) => state.people);
-  // console.log(usersFromStore);
 
   const [nextPage, setNextPage] = useState<string | null>(next);
   const [prevPage, setPrevPage] = useState<string | null>(previous);
 
   useEffect(() => {
-    setSearchParams({ page: searchParams.get('page') || '1' });
+    setSearchParams((prev) => ({
+      ...Object.fromEntries(prev),
+      page: searchParams.get('page') || '1',
+    }));
   }, []);
-
-  // useEffect(() => {
-  //   if (JSON.stringify(newPeopleList) !== localStorage.getItem('peopleData')) {
-  //     setPeople(newPeopleList);
-  //   }
-  //   setNextPage(next || '');
-  //   setPrevPage(previous || '');
-  //   localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
-
-  //   //после поиска и использования лоудера проверяем какие данные сейчас
-  // }, [newPeopleList, next, previous]);
 
   useEffect(() => {
     setNextPage(next || '');

@@ -1,4 +1,5 @@
 import { baseApi } from '../api';
+import { SearchParams } from '../components/Search/search.slice';
 import {
   SWAPI_PEOPLE,
   SWAPI_ROOT,
@@ -32,6 +33,20 @@ export const userApi = baseApi.injectEndpoints({
     getUsers: create.query<PeopleResponse, undefined>({
       query: () => '',
     }),
+    getUsersByParamsSearch: create.query<PeopleResponse, SearchParams>({
+      query: (params) => {
+        const { page = 1, search = '' } = params || {};
+        return {
+          url: '',
+          params: {
+            page,
+            search,
+          },
+        };
+      },
+    }),
   }),
   overrideExisting: true,
 });
+
+export const { useGetUsersByParamsSearchQuery } = userApi;
