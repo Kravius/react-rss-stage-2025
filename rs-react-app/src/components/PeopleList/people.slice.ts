@@ -1,26 +1,36 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PersonToRender } from '../../layout/PeoplePage/type';
 
-export type PeopleState = {
-  people?: PersonToRender[] | null;
-  person?: PersonToRender;
-  page?: {
-    next: string | null;
-    previous: string | null;
-  };
+type PeopleId = string;
+
+type SavePeopleState = {
+  saveEntities: Record<PeopleId, PersonToRender | undefined>;
 };
 
-const initialState: PersonToRender[] = [];
-// const initialState: PeopleState = {};
+const initialState: SavePeopleState = { saveEntities: {} };
 
 export const peopleSlice = createSlice({
   name: 'people',
   initialState: initialState,
   reducers: {
-    putToStored: (_, action: PayloadAction<PersonToRender[]>) => action.payload,
-    // putToStored: (state, action: PayloadAction<PersonToRender[]>) => {
-    // state.people = action.payload;
-    // },
+    putPersonToStored: (
+      state,
+      action: PayloadAction<{
+        id: PeopleId;
+        person: PersonToRender | undefined;
+      }>
+    ) => {
+      state.saveEntities[action.payload.id] = action.payload.person;
+    },
+    removePersonFromStored: (
+      state,
+      action: PayloadAction<{ id: PeopleId }>
+    ) => {
+      delete state.saveEntities[action.payload.id];
+    },
+    removeAllPersonFromStored: (state) => {
+      state.saveEntities = {};
+    },
   },
   selectors: {
     takePerson: createSelector(
@@ -33,3 +43,9 @@ export const peopleSlice = createSlice({
     ),
   },
 });
+
+export const {
+  putPersonToStored,
+  removePersonFromStored,
+  removeAllPersonFromStored,
+} = peopleSlice.actions;

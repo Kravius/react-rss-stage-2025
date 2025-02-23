@@ -27,10 +27,6 @@ export interface Person {
 export interface PersonToRender extends Omit<Person, 'url'> {
   id: string;
   img: string;
-  page?: {
-    next: string | null;
-    previous: string | null;
-  };
 }
 
 export type SearchParams = {

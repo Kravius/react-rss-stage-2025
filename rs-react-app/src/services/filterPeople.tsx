@@ -3,7 +3,7 @@ import {
   Person,
   PersonToRender,
 } from '../layout/PeoplePage/type';
-import { getPage, getPeopleId, getPeopleImg } from './getData';
+import { getPage, getPeopleId, getPeopleImg } from './changeData/changeData';
 
 interface Pages {
   next: string | null;

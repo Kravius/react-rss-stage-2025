@@ -18,7 +18,6 @@ const Person: React.FC = () => {
   const { id, search } = useLoaderData();
 
   const { data } = useGetPersonByIdQuery({ id, search });
-  console.log(data);
   return (
     <>
       <div>
