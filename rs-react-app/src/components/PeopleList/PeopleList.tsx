@@ -40,7 +40,7 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
           <li className={styles['people_list']} key={id}>
             <input
               type="checkbox"
-              checked={savePeopleStore.hasOwnProperty(id) || false}
+              checked={id in savePeopleStore || false}
               onChange={(ev) => handleCheckedChange(ev, id)}
             />
             <Link

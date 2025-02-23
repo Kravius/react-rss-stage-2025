@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../store';
 import { removeAllPersonFromStored } from '../PeopleList/people.slice';
-import styles from './.module.css';
 
 const SelectPersonInStore: React.FC = () => {
   const dispatch = useAppDispatch();

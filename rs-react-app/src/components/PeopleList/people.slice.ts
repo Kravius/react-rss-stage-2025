@@ -26,7 +26,8 @@ export const peopleSlice = createSlice({
       state,
       action: PayloadAction<{ id: PeopleId }>
     ) => {
-      delete state.saveEntities[action.payload.id];
+      const { [action.payload.id]: _, ...rest } = state.saveEntities;
+      state.saveEntities = rest;
     },
     removeAllPersonFromStored: (state) => {
       state.saveEntities = {};
