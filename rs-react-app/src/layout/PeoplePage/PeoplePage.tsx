@@ -112,15 +112,18 @@ const PeoplePage = () => {
           <button
             onClick={() => handlePageChange(nextPage)}
             disabled={!nextPage}
+            className={
+              navigation.state === 'loading' ? styles['non_active'] : ''
+            }
           >
             Next
           </button>
         </div>
+        {<SelectPersonInStore />}
         <div>
           <ErrorBTN>Error click</ErrorBTN>
         </div>
       </div>
-      {<SelectPersonInStore />}
       <div className={`${styles['person']} ${styles[isDark ? 'dark' : '']}`}>
         <Outlet />
       </div>
