@@ -1,5 +1,3 @@
-import { getApiResource } from '../api';
-import { API_ROOT } from '../constants/api';
 import {
   PeopleResponse,
   Person,
@@ -10,97 +8,49 @@ import { getPage, getPeopleId, getPeopleImg } from './getData';
 interface Pages {
   next: string | null;
   previous: string | null;
-  current: string;
 }
 
-const localStorageGetSearch = () => {
-  const savedSearchValue = localStorage.getItem('searchTerm');
-  if (savedSearchValue) {
-    return JSON.parse(savedSearchValue);
+const pages: Pages = { next: null, previous: null };
+
+export const newFilterPeopleData = (data: PeopleResponse | undefined) => {
+  const people: PersonToRender[] | undefined = data?.results.map(
+    (person: Person) => {
+      const id = getPeopleId(person.url);
+      const img = getPeopleImg(id);
+      return {
+        ...person,
+        id,
+        img,
+      };
+    }
+  );
+
+  if (data) {
+    pages.next = getPage(data.next);
+    pages.previous = getPage(data.previous);
   }
-  return '';
+  return { people, pages };
 };
 
-const peopleListWithAllData = async (page?: string) => {
-  const url = `${API_ROOT}/?page=${page}`;
+// export const getPerson = async ({
+//   id,
+//   page,
+// }: {
+//   id: string;
+//   page?: string;
+// }) => {
+//   const storedPeople = localStorage.getItem('peopleData');
+//   if (storedPeople) {
+//     const peopleList: PersonToRender[] = JSON.parse(storedPeople);
+//     const person = peopleList.find((el) => el.id === id);
+//     return person;
+//   }
 
-  const res: PeopleResponse = await getApiResource(url);
-  const peopleList: PersonToRender[] = res.results.map((person: Person) => {
-    const id = getPeopleId(person.url);
-    const img = getPeopleImg(id);
-    return {
-      ...person,
-      id,
-      img,
-    };
-  });
+//   //peopleListWithAllData что бы получить полный массив
+//   // const newPeopleList = await peopleListWithAllData(page);
 
-  const pages: Pages = {
-    next: getPage(res.next),
-    previous: getPage(res.previous),
-    current: '1',
-  };
-
-  return { peopleList, pages };
-};
-
-export const peopleData = (data: PeopleResponse | undefined) => {
-  if (!data) {
-    return;
-  }
-  const peopleList: PersonToRender[] = data.results.map((person: Person) => {
-    const id = getPeopleId(person.url);
-    const img = getPeopleImg(id);
-    return {
-      ...person,
-      id,
-      img,
-    };
-  });
-
-  return peopleList;
-};
-
-export const filterPeople = async ({
-  searchTerm,
-  page,
-}: {
-  searchTerm: string;
-  page: string;
-}) => {
-  const takeSearchTerm = searchTerm ? searchTerm : localStorageGetSearch();
-  const { peopleList, pages } = await peopleListWithAllData(page);
-  if (takeSearchTerm) {
-    const newPeopleList = peopleList.filter((person) =>
-      person.name.toLowerCase().includes(takeSearchTerm.toLowerCase())
-    );
-    return { newPeopleList, pages };
-  } else {
-    const newPeopleList = peopleList;
-    return { newPeopleList, pages };
-  }
-};
-
-export const getPerson = async ({
-  id,
-  page,
-}: {
-  id: string;
-  page?: string;
-}) => {
-  console.log(page, 'getPerson');
-  const storedPeople = localStorage.getItem('peopleData');
-  if (storedPeople) {
-    const peopleList: PersonToRender[] = JSON.parse(storedPeople);
-    const person = peopleList.find((el) => el.id === id);
-    return person;
-  }
-
-  //peopleListWithAllData что бы получить полный массив
-  // const newPeopleList = await peopleListWithAllData(page);
-
-  // console.log(newPeopleList, 'person');
-  // const person = newPeopleList.peopleList.find((el) => el.id === id);
-  // return person;
-  return '';
-};
+//   // console.log(newPeopleList, 'person');
+//   // const person = newPeopleList.peopleList.find((el) => el.id === id);
+//   // return person;
+//   return '';
+// };

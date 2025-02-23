@@ -1,11 +1,15 @@
 import { baseApi } from '../api';
-import { SearchParams } from '../components/Search/search.slice';
+
 import {
   SWAPI_PEOPLE,
   SWAPI_ROOT,
   VISUALGUIDE_ROOT_IMG,
 } from '../constants/api';
-import { PeopleResponse } from '../layout/PeoplePage/type';
+import {
+  PeopleResponse,
+  Person,
+  SearchParams,
+} from '../layout/PeoplePage/type';
 
 export const getPeopleId = (url: string) => {
   return getID(url);
@@ -35,7 +39,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     getUsersByParamsSearch: create.query<PeopleResponse, SearchParams>({
       query: (params) => {
-        const { page = 1, search = '' } = params || {};
+        const { page = '1', search = '' } = params || {};
         return {
           url: '',
           params: {
@@ -45,8 +49,16 @@ export const userApi = baseApi.injectEndpoints({
         };
       },
     }),
+    getPersonById: create.query<Person, SearchParams>({
+      query: (params) => {
+        return {
+          url: `${params.id}`,
+        };
+      },
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useGetUsersByParamsSearchQuery } = userApi;
+export const { useGetUsersByParamsSearchQuery, useGetPersonByIdQuery } =
+  userApi;

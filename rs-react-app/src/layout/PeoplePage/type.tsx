@@ -33,6 +33,12 @@ export interface PersonToRender extends Omit<Person, 'url'> {
   };
 }
 
+export type SearchParams = {
+  page?: string;
+  search?: string;
+  id?: '';
+};
+
 export interface State {
   people: PersonToRender[] | null;
   errorApi: boolean;

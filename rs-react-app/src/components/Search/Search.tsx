@@ -16,22 +16,22 @@ const Search: React.FC = () => {
     if (searchTerm !== '') {
       setSearchParams((prev) => ({
         ...Object.fromEntries(prev),
-        searchTerm: searchTerm,
+        search: searchTerm,
       }));
     } else {
       setSearchParams((prev) => {
         const updateParams = new URLSearchParams(prev);
-        updateParams.delete('searchTerm');
+        updateParams.delete('search');
         return updateParams;
       });
     }
   };
-  console.log(searchTerm);
+
   useEffect(() => {
     if (searchTerm) {
       setSearchParams((prev) => ({
         ...Object.fromEntries(prev),
-        searchTerm: searchTerm,
+        search: searchTerm,
       }));
     }
   }, []);

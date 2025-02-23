@@ -16,26 +16,19 @@ import {
   useNavigation,
   useSearchParams,
 } from 'react-router-dom';
-import { filterPeople, peopleData } from '../../services/filterPeople';
+import { newFilterPeopleData } from '../../services/filterPeople';
 import { peopleSlice } from '../../components/PeopleList/people.slice';
 
 import { useAppDispatch } from '../../store';
-// import { store, useAppDispatch, useAppSelector } from '../../store';
 import { useGetUsersByParamsSearchQuery } from '../../services/getData';
 import { useTheme } from '../../services/ThemeContex';
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
-  const searchTerm = url.searchParams.get('searchTerm') || '';
+  const searchTerm = url.searchParams.get('search') || '';
   const page = url.searchParams.get('page') || '';
 
-  try {
-    const { pages } = await filterPeople({ searchTerm, page });
-    return { searchTerm, page, pages };
-  } catch (error) {
-    console.log(error);
-    throw new Response('Ошибка загрузки данных', { status: 500 });
-  }
+  return { searchTerm, page };
 }
 
 // const people = [
@@ -53,20 +46,22 @@ const PeoplePage = () => {
   const navigation = useNavigation();
   //отправляем по адресу
   const navigate = useNavigate();
-  //old
-  // const { newPeopleList, pages } = useLoaderData();
 
-  const { pages, searchTerm, page } = useLoaderData();
-  const { next, previous, current } = pages;
+  const dispatch = useAppDispatch();
+
+  const { searchTerm, page } = useLoaderData();
+
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
   const { data } = useGetUsersByParamsSearchQuery({
     page,
+    //как сделать так что б когда не было поиска оно кидало на первую страницу
+    // page: searchTerm ? '1' : page,
     search: searchTerm,
   });
 
-  const people = peopleData(data);
-  const dispatch = useAppDispatch();
+  const { people, pages } = newFilterPeopleData(data);
+  const { next, previous } = pages;
+
   dispatch(peopleSlice.actions.putToStored(people || []));
 
   const [nextPage, setNextPage] = useState<string | null>(next);
@@ -89,7 +84,7 @@ const PeoplePage = () => {
   const goHome = () => {
     localStorage.setItem('searchTerm', '');
     if (!searchParams) {
-      setSearchParams({ page: current });
+      setSearchParams({ page: '1' });
     }
     navigate('/');
   };
