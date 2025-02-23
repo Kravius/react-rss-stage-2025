@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent } from 'react';
+import { ChangeEvent, FormEvent, useEffect } from 'react';
 import { Form, useNavigation, useSearchParams } from 'react-router-dom';
 import useSearchTerm from '../../services/customHook/useSearchTerm';
 
@@ -14,11 +14,27 @@ const Search: React.FC = () => {
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchTerm !== '') {
-      setSearchParams({ searchTerm: searchTerm });
+      setSearchParams((prev) => ({
+        ...Object.fromEntries(prev),
+        search: searchTerm,
+      }));
     } else {
-      setSearchParams({});
+      setSearchParams((prev) => {
+        const updateParams = new URLSearchParams(prev);
+        updateParams.delete('search');
+        return updateParams;
+      });
     }
   };
+
+  useEffect(() => {
+    if (searchTerm) {
+      setSearchParams((prev) => ({
+        ...Object.fromEntries(prev),
+        search: searchTerm,
+      }));
+    }
+  }, []);
 
   return (
     <div>

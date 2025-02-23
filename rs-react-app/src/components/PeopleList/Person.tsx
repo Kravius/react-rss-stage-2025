@@ -1,35 +1,31 @@
 import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
-import { getPerson } from '../../services/filterPeople';
-import { PersonToRender } from '../../layout/PeoplePage/type';
+// import { PersonToRender } from '../../layout/PeoplePage/type';
+// import { useAppSelector } from '../../store';
+// import { peopleSlice } from './people.slice';
+import { useGetPersonByIdQuery } from '../../services/getData';
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const page = url.searchParams.get('page');
+  const search = url.searchParams.get('search');
 
-  try {
-    const person = await getPerson({
-      id: params.peopleId || '',
-      page: page || '',
-    });
-    localStorage.setItem('person', JSON.stringify(person));
-    console.log(person, 'personloader');
-    return { person };
-  } catch (error) {
-    console.log(error);
-    throw new Response('Ошибка загрузки данных', { status: 500 });
-  }
+  const id = params.peopleId;
+
+  return { id, search, page };
 }
 
 const Person: React.FC = () => {
-  const { person } = useLoaderData<{ person: PersonToRender }>();
+  const { id, search } = useLoaderData();
+
+  const { data } = useGetPersonByIdQuery({ id, search });
   return (
     <>
       <div>
-        <img src={person.img} alt={person.name} />
-        <p>name: {person.name}</p>
-        <p>birth_year: {person.birth_year}</p>
-        <p>height: {person.height}</p>
-        <p>mass: {person.mass}</p>
+        {/* <img src={data?.img} alt={takePerson.name} /> */}
+        <p>name: {data?.name}</p>
+        <p>birth_year: {data?.birth_year}</p>
+        <p>height: {data?.height}</p>
+        <p>mass: {data?.mass}</p>
       </div>
     </>
   );

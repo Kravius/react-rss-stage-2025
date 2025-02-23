@@ -29,10 +29,25 @@ export interface PersonToRender extends Omit<Person, 'url'> {
   img: string;
 }
 
+export type SearchParams = {
+  page?: string;
+  search?: string;
+  id?: '';
+};
+
 export interface State {
   people: PersonToRender[] | null;
   errorApi: boolean;
   filterPeople: PersonToRender[] | null;
 }
+
+export type PeopleState = {
+  people: PersonToRender[] | null;
+  person: PersonToRender;
+  page?: {
+    next: string | null;
+    previous: string | null;
+  };
+};
 
 export type PeopleResponse = ApiResponse<Person>;

@@ -3,7 +3,6 @@ import styles from './peoplePage.module.css';
 import ErrorMessage from '../../components/Error/ErrorMessage/ErrorMessage';
 import PeopleList from '../../components/PeopleList/PeopleList';
 
-import { PersonToRender } from './type';
 import Spinner from '../../components/Spinner/Spinner';
 import Search from '../../components/Search/Search';
 import ErrorBTN from '../../components/Error/ErrorBtn/ErrorBtn';
@@ -16,55 +15,60 @@ import {
   useNavigation,
   useSearchParams,
 } from 'react-router-dom';
-import { filterPeople } from '../../services/filterPeople';
+import { newFilterPeopleData } from '../../services/filterPeople';
+
+import { useGetUsersByParamsSearchQuery } from '../../services/getData';
+import { useTheme } from '../../services/ThemeContex';
+import SelectPersonInStore from '../../components/SelectPersonInStore/SelectPersonInStore';
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
-  const searchTerm = url.searchParams.get('searchTerm') || '';
+  const searchTerm = url.searchParams.get('search') || '';
   const page = url.searchParams.get('page') || '';
-  try {
-    const { newPeopleList, pages } = await filterPeople({ searchTerm, page });
-    return { newPeopleList, searchTerm, pages };
-  } catch (error) {
-    console.log(error);
-    throw new Response('Ошибка загрузки данных', { status: 500 });
-  }
+
+  return { searchTerm, page };
 }
 
 const PeoplePage = () => {
+  const { isDark, toggleTheme } = useTheme();
   //проверка загрузки
   const navigation = useNavigation();
   //отправляем по адресу
   const navigate = useNavigate();
-  const { newPeopleList, pages } = useLoaderData();
-  const { next, previous, current } = pages;
-
+  const { searchTerm, page } = useLoaderData();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [people, setPeople] = useState<PersonToRender[]>(newPeopleList);
+  const { data } = useGetUsersByParamsSearchQuery({
+    page,
+    //как сделать так что б когда не было поиска оно кидало на первую страницу
+    // page: searchTerm ? '1' : page,
+    search: searchTerm,
+  });
+
+  const { people, pages } = newFilterPeopleData(data);
+  const { next, previous } = pages;
 
   const [nextPage, setNextPage] = useState<string | null>(next);
   const [prevPage, setPrevPage] = useState<string | null>(previous);
 
   useEffect(() => {
-    setSearchParams({ page: searchParams.get('page') || '1' });
+    setSearchParams((prev) => ({
+      ...Object.fromEntries(prev),
+      page: searchParams.get('page') || '1',
+    }));
   }, []);
 
   useEffect(() => {
-    if (JSON.stringify(newPeopleList) !== localStorage.getItem('peopleData')) {
-      setPeople(newPeopleList);
-    }
     setNextPage(next || '');
     setPrevPage(previous || '');
-    localStorage.setItem('peopleData', JSON.stringify(newPeopleList));
 
     //после поиска и использования лоудера проверяем какие данные сейчас
-  }, [newPeopleList, next, previous]);
+  }, [next, previous]);
 
   const goHome = () => {
     localStorage.setItem('searchTerm', '');
     if (!searchParams) {
-      setSearchParams({ page: current });
+      setSearchParams({ page: '1' });
     }
     navigate('/');
   };
@@ -77,17 +81,23 @@ const PeoplePage = () => {
       }));
     }
   };
+  console.log('render people');
 
   return (
-    <div className={styles['main_people-container']}>
+    <div
+      className={`${styles['main_people-container']} ${styles[isDark ? 'dark' : '']}`}
+    >
       <div>
         <div>
+          <button onClick={toggleTheme}>
+            {isDark ? 'turn light' : 'turn dark'}
+          </button>
           <Search />
           <button onClick={() => goHome()}>Home Page</button>
         </div>
         {navigation.state === 'loading' ? (
           <Spinner />
-        ) : people.length ? (
+        ) : people?.length ? (
           <PeopleList people={people} />
         ) : (
           <ErrorMessage />
@@ -102,15 +112,19 @@ const PeoplePage = () => {
           <button
             onClick={() => handlePageChange(nextPage)}
             disabled={!nextPage}
+            className={
+              navigation.state === 'loading' ? styles['non_active'] : ''
+            }
           >
             Next
           </button>
         </div>
+        {<SelectPersonInStore />}
         <div>
           <ErrorBTN>Error click</ErrorBTN>
         </div>
       </div>
-      <div className={styles['person']}>
+      <div className={`${styles['person']} ${styles[isDark ? 'dark' : '']}`}>
         <Outlet />
       </div>
     </div>
