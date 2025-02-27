@@ -14,8 +14,8 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
   const [searchParams] = useSearchParams();
   const { isDark } = useTheme();
   const dispatch = useAppDispatch();
+  const { saveEntities } = useAppSelector((state) => state.people);
 
-  const savePeopleStore = useAppSelector((state) => state.people.saveEntities);
   console.log('render');
 
   const handleCheckedChange = (
@@ -31,6 +31,17 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
     }
   };
 
+  if (!people.length) {
+    return (
+      <div
+        data-testid="list-container"
+        className={`${styles['list_container']} ${styles[isDark ? 'dark' : '']}`}
+      >
+        <ul></ul>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`${styles['list_container']} ${styles[isDark ? 'dark' : '']}`}
@@ -40,7 +51,7 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
           <li className={styles['people_list']} key={id}>
             <input
               type="checkbox"
-              checked={id in savePeopleStore || false}
+              checked={id in saveEntities || false}
               onChange={(ev) => handleCheckedChange(ev, id)}
             />
             <Link

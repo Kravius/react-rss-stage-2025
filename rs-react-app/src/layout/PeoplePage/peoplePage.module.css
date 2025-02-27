@@ -26,3 +26,7 @@
     background-color: rgb(51, 67, 70);
   }
 }
+
+.non_active {
+  cursor: none;
+}

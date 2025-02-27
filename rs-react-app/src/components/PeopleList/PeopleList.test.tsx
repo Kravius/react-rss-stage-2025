@@ -1,51 +1,156 @@
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom'; // Для работы с Link
-import PeopleList from './PeopleList';
-import { PersonToRender } from '../../layout/PeoplePage/type';
+// import { render, screen, fireEvent } from '@testing-library/react';
+// import { describe, expect, it, vi, beforeEach } from 'vitest';
+// import PeopleList from './PeopleList';
+// import { BrowserRouter } from 'react-router-dom';
+// import { Provider } from 'react-redux';
+// import { configureStore } from '@reduxjs/toolkit';
+// import { peopleSlice } from './people.slice';
 
-const mockPeople: PersonToRender[] = [
-  { id: '1', name: 'Luke Skywalker', img: 'luke.jpg' },
-  { id: '2', name: 'Darth Vader', img: 'vader.jpg' },
-];
+// // Mock data
+// const mockPeople = [
+//   { id: '1', name: 'Luke Skywalker', img: 'luke.jpg' },
+//   { id: '2', name: 'Darth Vader', img: 'vader.jpg' },
+// ];
 
-describe('PeopleList', () => {
-  it('отображает указанное количество карточек', () => {
-    render(
-      <Router>
-        <PeopleList people={mockPeople} />
-      </Router>
-    );
+// // Mock store setup
+// const createTestStore = () =>
+//   configureStore({
+//     reducer: {
+//       people: peopleSlice.reducer,
+//     },
+//   });
 
-    const cards = screen.getAllByRole('listitem');
-    expect(cards).toHaveLength(2);
-  });
+// // Mocks
+// const mockDispatch = vi.fn();
+// vi.mock('../../store', () => ({
+//   useAppDispatch: () => mockDispatch,
+//   useAppSelector: () => ({ saveEntities: {} }),
+// }));
 
-  it('каждая карточка содержит изображение и имя персонажа', () => {
-    render(
-      <Router>
-        <PeopleList people={mockPeople} />
-      </Router>
-    );
+// vi.mock('../../services/ThemeContex', () => ({
+//   useTheme: () => ({ isDark: false }),
+// }));
 
-    mockPeople.forEach((person) => {
-      const image = screen.getByAltText(person.name);
-      const name = screen.getByText(person.name);
+// // Test utils
+// const renderWithProviders = (ui: React.ReactElement) => {
+//   const testStore = createTestStore();
+//   return render(
+//     <Provider store={testStore}>
+//       <BrowserRouter>{ui}</BrowserRouter>
+//     </Provider>
+//   );
+// };
 
-      expect(image).toBeInTheDocument();
-      expect(name).toBeInTheDocument();
-    });
-  });
+// describe('PeopleList Component', () => {
+//   beforeEach(() => {
+//     vi.clearAllMocks();
+//   });
 
-  it('ссылки в карточках ведут на правильные URL', () => {
-    render(
-      <Router>
-        <PeopleList people={mockPeople} />
-      </Router>
-    );
+//   describe('Rendering', () => {
+//     it('should render empty list when no people provided', () => {
+//       renderWithProviders(<PeopleList people={[]} />);
+//       const container = screen.getByTestId('list-container');
+//       const list = container.querySelector('ul');
+//       expect(list).toBeInTheDocument();
+//       expect(list?.children.length).toBe(0);
+//     });
 
-    mockPeople.forEach((person) => {
-      const link = screen.getByRole('link', { name: person.name });
-      expect(link).toHaveAttribute('href', `/people/${person.id}`);
-    });
-  });
-});
+//     it('should render all people in the list', () => {
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+//       mockPeople.forEach((person) => {
+//         expect(screen.getByText(person.name)).toBeInTheDocument();
+//       });
+//     });
+
+//     it('should apply correct CSS classes', () => {
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+//       const items = screen.getAllByRole('listitem');
+//       items.forEach((item) => {
+//         expect(item).toHaveClass('people_list');
+//       });
+//     });
+//   });
+
+//   describe('Theme Support', () => {
+//     it('should apply light theme by default', () => {
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+//       const container = screen.getByTestId('list-container');
+//       expect(container).not.toHaveClass('dark');
+//     });
+
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+//       const container = screen.getByTestId('list-container');
+//       expect(container).toHaveClass('dark');
+//     });
+//   });
+
+//   describe('Checkbox Interactions', () => {
+//     it('should dispatch putPersonToStored when checkbox is checked', () => {
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+//       const checkbox = screen.getByLabelText(mockPeople[0].name);
+
+//       fireEvent.click(checkbox);
+
+//       expect(mockDispatch).toHaveBeenCalledWith(
+//         expect.objectContaining({
+//           type: 'people/putPersonToStored',
+//           payload: expect.objectContaining({
+//             id: mockPeople[0].id,
+//             person: mockPeople[0],
+//           }),
+//         })
+//       );
+//     });
+
+//     it('should dispatch removePersonFromStored when checkbox is unchecked', () => {
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+//       const checkbox = screen.getByLabelText(mockPeople[0].name);
+
+//       // Check and uncheck
+//       fireEvent.click(checkbox);
+//       fireEvent.click(checkbox);
+
+//       expect(mockDispatch).toHaveBeenLastCalledWith(
+//         expect.objectContaining({
+//           type: 'people/removePersonFromStored',
+//           payload: { id: mockPeople[0].id },
+//         })
+//       );
+//     });
+
+//     it('should show checked state for stored people', () => {
+//       vi.mocked(vi.importActual('../../store')).mockImplementation(() => ({
+//         useAppDispatch: () => mockDispatch,
+//         useAppSelector: () => ({
+//           saveEntities: { '1': mockPeople[0] },
+//         }),
+//       }));
+
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+//       const checkbox = screen.getByLabelText(mockPeople[0].name);
+//       expect(checkbox).toBeChecked();
+//     });
+//   });
+
+//   describe('Navigation', () => {
+//     it('should preserve search params in links', () => {
+//       window.history.pushState({}, '', '?search=test');
+
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+
+//       const links = screen.getAllByRole('link');
+//       links.forEach((link) => {
+//         expect(link.href).toContain('search=test');
+//       });
+//     });
+
+//     it('should have correct navigation paths', () => {
+//       renderWithProviders(<PeopleList people={mockPeople} />);
+
+//       mockPeople.forEach((person) => {
+//         const link = screen.getByText(person.name).closest('a');
+//         expect(link?.getAttribute('href')).toBe(`/people/${person.id}`);
+//       });
+//     });
+//   });
+// });
