@@ -36,6 +36,11 @@ import { useRouter } from 'next/router';
 //     page: page as string,
 //     search: searchTerm as string,
 //   });
+// const { data } = useGetUsersByParamsSearchQuery({
+//   page: '1',
+//   search: '',
+// });
+
 //   return {
 //     props: { data }, // передаем данные в компонент
 //   };
@@ -58,7 +63,7 @@ const PeoplePage = () => {
     // page: searchTerm ? '1' : page,
     search: searchTerm as string,
   });
-
+  console.log(data);
   const { people, pages } = newFilterPeopleData(data);
   const { next, previous } = pages;
 
@@ -106,7 +111,7 @@ const PeoplePage = () => {
           <button onClick={toggleTheme}>
             {isDark ? 'turn light' : 'turn dark'}
           </button>
-          {/* <Search /> */}
+          <Search />
           <button onClick={() => console.log('name')}>Home Page</button>
         </div>
       </div>

@@ -1,11 +1,13 @@
-import { ChangeEvent, FormEvent, useEffect } from 'react';
-import { Form, useNavigation, useSearchParams } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import useSearchTerm from '@services/customHook/useSearchTerm';
+
+import useQueryParams from '@services/customHook/useQueryparams';
 
 const Search: React.FC = () => {
   const [searchTerm, setSearchTerm] = useSearchTerm();
-  const [, setSearchParams] = useSearchParams();
-  const navigation = useNavigation();
+  const { query, setQuery, removeParam } = useQueryParams();
+  const [isLoading, setIsLoading] = useState(false);
+  // const [, setSearchParams] = useSearchParams();
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.trim());
@@ -14,44 +16,42 @@ const Search: React.FC = () => {
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchTerm !== '') {
-      setSearchParams((prev) => ({
-        ...Object.fromEntries(prev),
-        search: searchTerm,
-      }));
+      setQuery('search', searchTerm);
+      setIsLoading(true);
+      // setSearchParams((prev) => ({
+      //   ...Object.fromEntries(prev),
+      //   search: searchTerm,
+      // }));
     } else {
-      setSearchParams((prev) => {
-        const updateParams = new URLSearchParams(prev);
-        updateParams.delete('search');
-        return updateParams;
-      });
+      removeParam('search');
+      // setQuery((prev) => {
+      //   const updateParams = new URLSearchParams(prev);
+      //   updateParams.delete('search');
+      //   return updateParams;
+      // });
     }
+    setIsLoading(true);
   };
 
   useEffect(() => {
     if (searchTerm) {
-      setSearchParams((prev) => ({
-        ...Object.fromEntries(prev),
-        search: searchTerm,
-      }));
+      setQuery('search', searchTerm);
     }
   }, []);
 
   return (
     <div>
-      <Form onSubmit={handleSearch}>
+      <form onSubmit={handleSearch}>
         <input
           type="text"
           value={searchTerm}
           onChange={handleInputChange}
           placeholder="Search People"
         />
-        <button
-          disabled={navigation.state === 'loading' ? true : false}
-          type="submit"
-        >
+        <button disabled={isLoading ? true : false} type="submit">
           Search
         </button>
-      </Form>
+      </form>
     </div>
   );
 };
