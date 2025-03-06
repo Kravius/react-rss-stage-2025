@@ -1,33 +1,45 @@
-import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
-// import { PersonToRender } from '../../layout/PeoplePage/type';
-// import { useAppSelector } from '../../store';
-// import { peopleSlice } from './people.slice';
+'use client';
 import { useGetPersonByIdQuery } from '@services/getData';
-import { peopleSlice } from '@components/PeopleList/people.slice';
+import Spinner from '@components/Spinner/Spinner';
+import useQueryParams from '@services/customHook/useQueryparams';
+import { useEffect } from 'react';
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const page = url.searchParams.get('page');
-  const search = url.searchParams.get('search');
-
-  const id = params.peopleId;
-
-  return { id, search, page };
+interface PersonProps {
+  id: string;
+  setIsActive?: (id: string | null) => void;
 }
 
-const Person: React.FC = () => {
-  const { id, search } = useLoaderData();
+const Person: React.FC<PersonProps> = ({ id, setIsActive }) => {
+  const { setQuery, removeParam } = useQueryParams();
+  // const { peopleId } = router.query;
+  const { data } = useGetPersonByIdQuery({ id });
 
-  const { data } = useGetPersonByIdQuery({ id, search });
+  useEffect(() => {
+    setQuery('people', id);
+
+    return () => {
+      removeParam('people');
+    };
+  }, [id]);
+
+  const handelClosePerson = () => {
+    setIsActive(null);
+    removeParam('people');
+  };
+
   return (
     <>
-      <div>
-        {/* <img src={data?.img} alt={takePerson.name} /> */}
-        <p>name: {data?.name}</p>
-        <p>birth_year: {data?.birth_year}</p>
-        <p>height: {data?.height}</p>
-        <p>mass: {data?.mass}</p>
-      </div>
+      {data ? (
+        <div>
+          <button onClick={() => handelClosePerson()}>close</button>
+          <p>name: {data?.name}</p>
+          <p>birth_year: {data?.birth_year}</p>
+          <p>height: {data?.height}</p>
+          <p>mass: {data?.mass}</p>
+        </div>
+      ) : (
+        <Spinner />
+      )}
     </>
   );
 };

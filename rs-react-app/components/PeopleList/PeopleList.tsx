@@ -6,14 +6,16 @@ import {
   removePersonFromStored,
 } from '@components/PeopleList/people.slice';
 import { PersonToRender } from '@pages/type';
-import Link from 'next/link';
+import { useState } from 'react';
+import Person from './Person';
+import PersonStartScreen from '@components/PersonStartScreen/PersonStartScreen';
 
 interface PeopleListProps {
   people: PersonToRender[];
 }
 
 const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
-  // const [searchParams] = useSearchParams();
+  const [isActive, setIsActive] = useState<string>('');
   const { isDark } = useTheme();
   const dispatch = useAppDispatch();
   const { saveEntities } = useAppSelector((state) => state.people);
@@ -24,7 +26,6 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
     e: React.ChangeEvent<HTMLInputElement>,
     id: string
   ) => {
-    //нужно напрямую брать с value input
     if (e.target.checked) {
       const person = people.find((person) => person.id === id);
       dispatch(peopleSlice.actions.putPersonToStored({ id, person }));
@@ -38,30 +39,38 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
       <div
         data-testid="list-container"
         className={`${styles['list_container']} ${styles[isDark ? 'dark' : '']}`}
-      >
-        <ul></ul>
-      </div>
+      ></div>
     );
   }
+  const openWindowPerson = (id: string | null) => {
+    setIsActive(id);
+  };
 
   return (
     <div
       className={`${styles['list_container']} ${styles[isDark ? 'dark' : '']}`}
     >
       <ul>
-        {people.map(({ id, name }) => (
-          <li className={styles['people_list']} key={id}>
-            <input
-              type="checkbox"
-              checked={id in saveEntities || false}
-              onChange={(ev) => handleCheckedChange(ev, id)}
-            />
-            <Link href={`/people/${id}`}>
-              <span>{name}</span>
-            </Link>
-          </li>
-        ))}
+        {people.map(({ id, name }) => {
+          return (
+            <li className={styles['people_list']} key={id}>
+              <input
+                type="checkbox"
+                checked={id in saveEntities || false}
+                onChange={(ev) => handleCheckedChange(ev, id)}
+              />
+              <button onClick={() => openWindowPerson(id)}>
+                <span>{name}</span>
+              </button>
+            </li>
+          );
+        })}
       </ul>
+      <div>
+        {(isActive && (
+          <Person id={isActive.toString()} setIsActive={setIsActive} />
+        )) || <PersonStartScreen />}
+      </div>
     </div>
   );
 };

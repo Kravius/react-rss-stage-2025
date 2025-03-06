@@ -5,7 +5,7 @@ import {
   getPeopleImg,
 } from '@services/changeData/changeData';
 
-interface Pages {
+export interface Pages {
   next: string | null;
   previous: string | null;
 }
@@ -31,26 +31,3 @@ export const newFilterPeopleData = (data: PeopleResponse | undefined) => {
   }
   return { people, pages };
 };
-
-// export const getPerson = async ({
-//   id,
-//   page,
-// }: {
-//   id: string;
-//   page?: string;
-// }) => {
-//   const storedPeople = localStorage.getItem('peopleData');
-//   if (storedPeople) {
-//     const peopleList: PersonToRender[] = JSON.parse(storedPeople);
-//     const person = peopleList.find((el) => el.id === id);
-//     return person;
-//   }
-
-//   //peopleListWithAllData что бы получить полный массив
-//   // const newPeopleList = await peopleListWithAllData(page);
-
-//   // console.log(newPeopleList, 'person');
-//   // const person = newPeopleList.peopleList.find((el) => el.id === id);
-//   // return person;
-//   return '';
-// };

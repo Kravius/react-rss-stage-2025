@@ -19,6 +19,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.logErrorToServices(error.toString(), errorInfo.componentStack);
+    this.setState({ errorMassage: error.toString() });
   }
 
   static getDerivedStateFromError(error: Error) {
@@ -26,7 +27,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   reloadPage = () => {
-    history.go(0);
+    window.location.reload();
   };
 
   render() {

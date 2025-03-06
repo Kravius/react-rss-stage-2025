@@ -18,20 +18,6 @@ export default function useQueryParams() {
     });
   };
 
-  const removeParam = (param: string) => {
-    const newQuery = { ...query };
-    delete newQuery[param];
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query: newQuery,
-      },
-      undefined,
-      { scroll: false }
-    );
-  };
-
   const goHome = () => {
     localStorage.setItem('search', '');
     const newUrl = {
@@ -53,18 +39,18 @@ export default function useQueryParams() {
   // };
 
   //рабочая версия!!
-  // const removeParam = (key: string | null) => {
-  //   if (!key) return;
+  const removeParam = (key: string | null) => {
+    if (!key) return;
 
-  //   const newQuery = Object.fromEntries(
-  //     Object.entries(query).filter(([k]) => k !== key)
-  //   );
+    const newQuery = Object.fromEntries(
+      Object.entries(query).filter(([k]) => k !== key)
+    );
 
-  //   router.push({
-  //     pathname: router.pathname,
-  //     query: newQuery,
-  //   });
-  // };
+    router.push({
+      pathname: router.pathname,
+      query: newQuery,
+    });
+  };
 
   return { query, setQuery, removeParam, goHome };
 }

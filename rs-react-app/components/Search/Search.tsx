@@ -5,9 +5,8 @@ import useQueryParams from '@services/customHook/useQueryparams';
 
 const Search: React.FC = () => {
   const [searchTerm, setSearchTerm] = useSearchTerm();
-  const { query, setQuery, removeParam } = useQueryParams();
+  const { setQuery, removeParam, goHome } = useQueryParams();
   const [isLoading, setIsLoading] = useState(false);
-  // const [, setSearchParams] = useSearchParams();
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.trim());
@@ -30,7 +29,7 @@ const Search: React.FC = () => {
       //   return updateParams;
       // });
     }
-    setIsLoading(true);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -52,6 +51,7 @@ const Search: React.FC = () => {
           Search
         </button>
       </form>
+      <button onClick={() => goHome()}>Home Page</button>
     </div>
   );
 };

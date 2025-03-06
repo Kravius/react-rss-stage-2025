@@ -32,7 +32,7 @@ export interface PersonToRender extends Omit<Person, 'url'> {
 export type SearchParams = {
   page?: string;
   search?: string;
-  id?: '';
+  id?: string;
 };
 
 export interface State {
