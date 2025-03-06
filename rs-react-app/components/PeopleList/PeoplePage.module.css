@@ -1,21 +1,3 @@
-:root {
-  --font-family-main: sans-serif;
-
-  --border-radius-small: 5px;
-
-  --color-dark-gray-main: rgb(188, 168, 168);
-  --color-white: #fff;
-
-  --color-isDark-theme: rgb(42, 44, 40);
-  --color-isDark-them-word: rgb(103, 126, 132);
-  --color-isDark-them-btn: rgb(101, 133, 125);
-}
-
-body {
-  background-color: var(--color-dark-gray-main);
-  font-family: var(--font-family-main);
-}
-
 .main_people-container {
   display: flex;
   border: 1px solid rgb(236, 146, 146);
@@ -24,11 +6,12 @@ body {
   &.dark {
     background-color: var(--color-isDark-theme);
 
-    & p,
+    &p,
     h1,
     h3 {
       color: var(--color-isDark-them-word);
     }
+
     & button {
       background-color: var(--color-isDark-them-btn);
     }

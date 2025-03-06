@@ -1,24 +1,3 @@
-// 'use client';
-// import { useEffect, useState } from 'react';
-
-// const useSearchTerm = () => {
-//   const [searchTerm, setSearchTerm] = useState(() => {
-//     const savedSearchValue = localStorage.getItem('searchTerm');
-//     return savedSearchValue ? JSON.parse(savedSearchValue) : '';
-//   });
-
-//   useEffect(() => {
-//     if (searchTerm) {
-//       localStorage.setItem('searchTerm', JSON.stringify(searchTerm));
-//     } else {
-//       localStorage.removeItem('searchTerm');
-//     }
-//   }, [searchTerm]);
-//   return [searchTerm, setSearchTerm] as const;
-// };
-
-// export default useSearchTerm;
-
 import { useEffect, useState } from 'react';
 
 const useSearchTerm = () => {
@@ -28,7 +7,7 @@ const useSearchTerm = () => {
     // Проверяем, что мы находимся в браузере (на клиенте)
     if (typeof window !== 'undefined') {
       try {
-        const savedSearchValue = localStorage.getItem('searchTerm');
+        const savedSearchValue = localStorage.getItem('search');
         if (savedSearchValue) {
           setSearchTerm(JSON.parse(savedSearchValue));
         }
@@ -43,9 +22,9 @@ const useSearchTerm = () => {
     if (typeof window !== 'undefined') {
       try {
         if (searchTerm) {
-          localStorage.setItem('searchTerm', JSON.stringify(searchTerm));
+          localStorage.setItem('search', JSON.stringify(searchTerm));
         } else {
-          localStorage.removeItem('searchTerm');
+          localStorage.removeItem('search');
         }
       } catch (error) {
         console.error('Error saving searchTerm to localStorage', error);

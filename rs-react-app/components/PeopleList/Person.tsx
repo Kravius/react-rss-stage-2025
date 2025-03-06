@@ -3,6 +3,7 @@ import { LoaderFunctionArgs, useLoaderData } from 'react-router-dom';
 // import { useAppSelector } from '../../store';
 // import { peopleSlice } from './people.slice';
 import { useGetPersonByIdQuery } from '@services/getData';
+import { peopleSlice } from '@components/PeopleList/people.slice';
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);

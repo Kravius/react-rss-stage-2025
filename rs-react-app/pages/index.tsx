@@ -1,4 +1,6 @@
+// import styles from './peoplePage.module.scss';
 import styles from './peoplePage.module.css';
+
 import PeopleList from '@components/PeopleList/PeopleList';
 
 import Spinner from '@components/Spinner/Spinner';
@@ -21,41 +23,12 @@ import ErrorMessage from '@components/Error/ErrorMessage/ErrorMessage';
 import ErrorBTN from '@components/Error/ErrorBtn/ErrorBtn';
 import { useRouter } from 'next/router';
 
-// export async function loader({ request }: { request: Request }) {
-//   const url = new URL(request.url);
-//   const searchTerm = url.searchParams.get('search') || '';
-//   const page = url.searchParams.get('page') || '';
-
-//   return { searchTerm, page };
-// }
-
-// export async function getServerSideProps(context: any) {
-//   const { searchTerm, page = '1' } = context.query;
-
-//   const { data } = useGetUsersByParamsSearchQuery({
-//     page: page as string,
-//     search: searchTerm as string,
-//   });
-// const { data } = useGetUsersByParamsSearchQuery({
-//   page: '1',
-//   search: '',
-// });
-
-//   return {
-//     props: { data }, // передаем данные в компонент
-//   };
-// }
-
 const PeoplePage = () => {
   const { isDark, toggleTheme } = useTheme();
   //проверка загрузки
-  // const navigation = useNavigation();
   const router = useRouter();
   const { searchTerm, page = '1' } = router.query;
-  //отправляем по адресу
-  // const navigate = useNavigate();
   // const { searchTerm, page } = useLoaderData();
-  // const [searchParams, setSearchParams] = useSearchParams();
 
   const { data } = useGetUsersByParamsSearchQuery({
     page: page as string,
@@ -63,34 +36,19 @@ const PeoplePage = () => {
     // page: searchTerm ? '1' : page,
     search: searchTerm as string,
   });
-  console.log(data);
   const { people, pages } = newFilterPeopleData(data);
-  const { next, previous } = pages;
+  // const { next, previous } = pages;
+  console.log(people);
 
-  const [nextPage, setNextPage] = useState<string | null>(next);
-  const [prevPage, setPrevPage] = useState<string | null>(previous);
+  // const [nextPage, setNextPage] = useState<string | null>(next);
+  // const [prevPage, setPrevPage] = useState<string | null>(previous);
 
   // useEffect(() => {
-  //   setSearchParams((prev) => ({
-  //     ...Object.fromEntries(prev),
-  //     page: searchParams.get('page') || '1',
-  //   }));
-  // }, []);
+  //   setNextPage(next || '');
+  //   setPrevPage(previous || '');
 
-  useEffect(() => {
-    setNextPage(next || '');
-    setPrevPage(previous || '');
-
-    //после поиска и использования лоудера проверяем какие данные сейчас
-  }, [next, previous]);
-
-  // const goHome = () => {
-  //   localStorage.setItem('searchTerm', '');
-  //   if (!searchParams) {
-  //     setSearchParams({ page: '1' });
-  //   }
-  //   navigate('/');
-  // };
+  //   //после поиска и использования лоудера проверяем какие данные сейчас
+  // }, [next, previous]);
 
   // const handlePageChange = (newPage: string | null) => {
   //   if (newPage) {
@@ -101,7 +59,7 @@ const PeoplePage = () => {
   //   }
   // };
   console.log('render people');
-
+  console.log(people);
   return (
     <div
       className={`${styles['main_people-container']} ${styles[isDark ? 'dark' : '']}`}
@@ -112,8 +70,17 @@ const PeoplePage = () => {
             {isDark ? 'turn light' : 'turn dark'}
           </button>
           <Search />
-          <button onClick={() => console.log('name')}>Home Page</button>
         </div>
+        {people?.length ? <PeopleList people={people} /> : <ErrorMessage />}
+        {
+          // navigation.state === 'loading' ? (
+          // <Spinner />
+          // ) : people?.length ? (
+          // <PeopleList people={people} />
+          // ) : (
+          // <ErrorMessage />
+          // )
+        }
       </div>
     </div>
   );
@@ -129,6 +96,7 @@ const PeoplePage = () => {
   //         <Search />
   //         <button onClick={() => goHome()}>Home Page</button>
   //       </div>
+  // !
   //       {navigation.state === 'loading' ? (
   //         <Spinner />
   //       ) : people?.length ? (

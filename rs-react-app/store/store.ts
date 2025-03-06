@@ -2,9 +2,9 @@ import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { peopleSlice } from '@components/PeopleList/people.slice';
 // import { peopleSlice } from './components/PeopleList/people.slice';
 
+//закомитил два файла в tsconfige node i app
 import { useDispatch, useSelector, useStore } from 'react-redux';
-// import { baseApi } from '@services/api';
-import { baseApi } from '../services/api';
+import { baseApi } from '@services/api';
 
 export const store = configureStore({
   reducer: {

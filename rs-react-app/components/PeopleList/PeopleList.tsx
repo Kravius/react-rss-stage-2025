@@ -1,5 +1,3 @@
-import { Link, useSearchParams } from 'react-router-dom';
-
 import styles from './PeopleList.module.scss';
 import { useTheme } from '@services/ThemeContex';
 import { useAppDispatch, useAppSelector } from '@store/store';
@@ -8,18 +6,19 @@ import {
   removePersonFromStored,
 } from '@components/PeopleList/people.slice';
 import { PersonToRender } from '@pages/type';
+import Link from 'next/link';
 
 interface PeopleListProps {
   people: PersonToRender[];
 }
 
 const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
   const { isDark } = useTheme();
   const dispatch = useAppDispatch();
   const { saveEntities } = useAppSelector((state) => state.people);
 
-  console.log('render');
+  console.log('render', 'PeopleList');
 
   const handleCheckedChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -57,12 +56,7 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
               checked={id in saveEntities || false}
               onChange={(ev) => handleCheckedChange(ev, id)}
             />
-            <Link
-              to={{
-                pathname: `/people/${id}`,
-                search: searchParams.toString(),
-              }}
-            >
+            <Link href={`/people/${id}`}>
               <span>{name}</span>
             </Link>
           </li>

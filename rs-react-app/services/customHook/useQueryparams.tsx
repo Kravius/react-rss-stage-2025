@@ -1,7 +1,9 @@
+// import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 
 export default function useQueryParams() {
   const router = useRouter();
+  // const searchParams = useSearchParams();
   const { query } = router;
 
   const setQuery = (key: string, value: string) => {
@@ -30,6 +32,26 @@ export default function useQueryParams() {
     );
   };
 
+  const goHome = () => {
+    localStorage.setItem('search', '');
+    const newUrl = {
+      pathname: '/',
+      query: { page: '1' },
+    };
+    router.push(newUrl);
+  };
+
+  // const goHome = () => {
+  //   localStorage.setItem('searchTerm', '');
+
+  //   const params = new URLSearchParams(searchParams);
+  //   if (!params.has('page')) {
+  //     params.set('page', '1');
+  //   }
+
+  //   router.push(`/?${params.toString()}`);
+  // };
+
   //рабочая версия!!
   // const removeParam = (key: string | null) => {
   //   if (!key) return;
@@ -44,5 +66,5 @@ export default function useQueryParams() {
   //   });
   // };
 
-  return { query, setQuery, removeParam };
+  return { query, setQuery, removeParam, goHome };
 }
