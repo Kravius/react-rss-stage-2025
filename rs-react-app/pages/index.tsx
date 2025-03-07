@@ -28,7 +28,6 @@ const PeoplePage = () => {
   const { people, pages } = newFilterPeopleData(data);
   const { next, previous } = pages;
 
-  console.log('render people');
   return (
     <main
       className={`${styles['main_people-container']} ${styles[isDark ? 'dark' : '']}`}

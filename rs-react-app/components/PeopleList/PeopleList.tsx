@@ -9,6 +9,7 @@ import { PersonToRender } from '@pages/type';
 import { useState } from 'react';
 import Person from './Person';
 import PersonStartScreen from '@components/PersonStartScreen/PersonStartScreen';
+import { useRouter } from 'next/router';
 
 interface PeopleListProps {
   people: PersonToRender[];
@@ -19,8 +20,8 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
   const { isDark } = useTheme();
   const dispatch = useAppDispatch();
   const { saveEntities } = useAppSelector((state) => state.people);
-
-  console.log('render', 'PeopleList');
+  const router = useRouter();
+  const { person } = router.query;
 
   const handleCheckedChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -67,8 +68,11 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
         })}
       </ul>
       <div>
-        {(isActive && (
-          <Person id={isActive.toString()} setIsActive={setIsActive} />
+        {((isActive || person) && (
+          <Person
+            id={isActive.toString() || person.toString()}
+            setIsActive={setIsActive}
+          />
         )) || <PersonStartScreen />}
       </div>
     </div>

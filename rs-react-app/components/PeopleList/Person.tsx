@@ -11,20 +11,19 @@ interface PersonProps {
 
 const Person: React.FC<PersonProps> = ({ id, setIsActive }) => {
   const { setQuery, removeParam } = useQueryParams();
-  // const { peopleId } = router.query;
   const { data } = useGetPersonByIdQuery({ id });
 
   useEffect(() => {
-    setQuery('people', id);
+    setQuery('person', id);
 
     return () => {
-      removeParam('people');
+      removeParam('person');
     };
   }, [id]);
 
   const handelClosePerson = () => {
     setIsActive(null);
-    removeParam('people');
+    removeParam('person');
   };
 
   return (
