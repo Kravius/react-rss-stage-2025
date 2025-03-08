@@ -1,0 +1,19 @@
+.main_people-container {
+  display: flex;
+  border: 1px solid rgb(236, 146, 146);
+  margin: auto 20px;
+
+  &.dark {
+    background-color: var(--color-isDark-theme);
+
+    & p,
+    h1,
+    h3 {
+      color: var(--color-isDark-them-word);
+    }
+
+    & button {
+      background-color: var(--color-isDark-them-btn);
+    }
+  }
+}

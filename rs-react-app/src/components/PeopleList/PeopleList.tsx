@@ -1,3 +1,4 @@
+'use client';
 import styles from './PeopleList.module.scss';
 import { useTheme } from '@services/ThemeContex';
 import { useAppDispatch, useAppSelector } from '@store/store';
@@ -5,11 +6,11 @@ import {
   peopleSlice,
   removePersonFromStored,
 } from '@components/PeopleList/people.slice';
-import { PersonToRender } from 'pages1/type';
+import { PersonToRender } from 'src/type/type';
 import { useState } from 'react';
 import Person from './Person';
 import PersonStartScreen from '@components/PersonStartScreen/PersonStartScreen';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 
 interface PeopleListProps {
   people: PersonToRender[];
@@ -20,8 +21,8 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
   const { isDark } = useTheme();
   const dispatch = useAppDispatch();
   const { saveEntities } = useAppSelector((state) => state.people);
-  const router = useRouter();
-  const { person } = router.query;
+  const searchParams = useSearchParams();
+  const person = searchParams.get('person');
 
   const handleCheckedChange = (
     e: React.ChangeEvent<HTMLInputElement>,

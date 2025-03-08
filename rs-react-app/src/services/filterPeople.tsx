@@ -1,4 +1,4 @@
-import { PeopleResponse, Person, PersonToRender } from 'pages1/type';
+import { PeopleResponse, Person, PersonToRender } from 'src/type/type';
 import {
   getPage,
   getPeopleId,

@@ -1,22 +1,37 @@
-// import React from 'react';
-// import './globals.css';
-// import { AppProps } from 'next/app';
+import styles from './peoplePage.module.scss';
+import { Suspense } from 'react';
 
-// import { Provider } from 'react-redux';
-// import { store } from '@store/store';
-// import { ThemeProvider } from '@services/ThemeContex';
-// import Head from 'next/head';
-// import { ErrorBoundary } from '@components/Error/ErrorBoundary/ErrorBoundary';
+import Spinner from '@components/Spinner/Spinner';
+import SelectPersonInStore from '@components/SelectPersonInStore/SelectPersonInStore';
+import Footer from '@components/Footer/Footer';
+import Header from '@components/Header/Header';
+import SectionPeoplePage from '@components/MainPeoplePage/SectionPeoplePage';
+import { getServerSideProps } from '@services/api';
 
-// export default function App({ Component, pageProps }: AppProps) {
-//   return (
-//     <Provider store={store}>
-//       <ThemeProvider>
-//         <Head />
-//         <ErrorBoundary>
-//           <Component {...pageProps} />
-//         </ErrorBoundary>
-//       </ThemeProvider>
-//     </Provider>
-//   );
-// }
+interface PeoplePageProps {
+  searchParams: {
+    page?: string;
+    search?: string;
+    person?: string;
+  };
+}
+
+const PeoplePage = async ({ searchParams }: PeoplePageProps) => {
+  const { page = '1', search = '' } = await searchParams;
+  const data = await getServerSideProps(page, search);
+
+  return (
+    <>
+      <Header />
+      <Suspense fallback={<Spinner />}>
+        <main className={`${styles['main_people-container']}`}>
+          <SectionPeoplePage data={data} />
+          <SelectPersonInStore />
+        </main>
+      </Suspense>
+      <Footer />
+    </>
+  );
+};
+
+export default PeoplePage;

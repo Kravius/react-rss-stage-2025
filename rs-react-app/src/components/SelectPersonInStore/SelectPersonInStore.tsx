@@ -1,3 +1,5 @@
+'use client';
+
 import { useAppDispatch, useAppSelector } from '@store/store';
 import { removeAllPersonFromStored } from '@components/PeopleList/people.slice';
 
@@ -43,13 +45,15 @@ const SelectPersonInStore: React.FC = () => {
   return (
     <>
       {countOfPeopleOnStore > 0 && (
-        <div>
-          <h2>Select: {countOfPeopleOnStore}</h2>
-          <button onClick={handleDownload}>Download</button>
-          <button onClick={() => dispatch(removeAllPersonFromStored())}>
-            Cancel All
-          </button>
-        </div>
+        <section>
+          <div>
+            <h2>Select: {countOfPeopleOnStore}</h2>
+            <button onClick={handleDownload}>Download</button>
+            <button onClick={() => dispatch(removeAllPersonFromStored())}>
+              Cancel All
+            </button>
+          </div>
+        </section>
       )}
     </>
   );
