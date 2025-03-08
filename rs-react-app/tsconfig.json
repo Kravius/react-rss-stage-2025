@@ -24,14 +24,20 @@
     "jsx": "preserve",
     "baseUrl": ".", // Добавление базового пути для абсолютных импортов
     "paths": {
-      "@components/*": ["components/*"],
-      "@pages/*": ["pages/*"],
-      "@services/*": ["services/*"],
-      "@store/*": ["store/*"],
-      "@constants/*": ["constants/*"]
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages1/*"],
+      "@services/*": ["src/services/*"],
+      "@store/*": ["src/store/*"],
+      "@constants/*": ["src/constants/*"]
     },
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

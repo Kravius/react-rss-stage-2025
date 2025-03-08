@@ -1,6 +1,6 @@
 import { baseApi } from '@services/api';
 
-import { PeopleResponse, Person, SearchParams } from '@pages/type';
+import { PeopleResponse, Person, SearchParams } from 'pages1/type';
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (create) => ({

@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PersonToRender } from '@pages/type';
+import { PersonToRender } from 'pages1/type';
 
 type PeopleId = string;
 

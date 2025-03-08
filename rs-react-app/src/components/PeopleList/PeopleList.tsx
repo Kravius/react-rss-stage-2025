@@ -5,7 +5,7 @@ import {
   peopleSlice,
   removePersonFromStored,
 } from '@components/PeopleList/people.slice';
-import { PersonToRender } from '@pages/type';
+import { PersonToRender } from 'pages1/type';
 import { useState } from 'react';
 import Person from './Person';
 import PersonStartScreen from '@components/PersonStartScreen/PersonStartScreen';
@@ -43,7 +43,7 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
       ></div>
     );
   }
-  const openWindowPerson = (id: string | null) => {
+  const openWindowPerson = (id: string) => {
     setIsActive(id);
   };
 
@@ -70,7 +70,7 @@ const PeopleList: React.FC<PeopleListProps> = ({ people }) => {
       <div>
         {((isActive || person) && (
           <Person
-            id={isActive.toString() || person.toString()}
+            id={isActive.toString() || (person as string)}
             setIsActive={setIsActive}
           />
         )) || <PersonStartScreen />}

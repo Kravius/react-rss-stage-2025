@@ -5,8 +5,8 @@ import useQueryParams from '@services/customHook/useQueryparams';
 import { useEffect } from 'react';
 
 interface PersonProps {
-  id: string;
-  setIsActive?: (id: string | null) => void;
+  id: string | undefined;
+  setIsActive: (id: string) => void;
 }
 
 const Person: React.FC<PersonProps> = ({ id, setIsActive }) => {
@@ -14,7 +14,9 @@ const Person: React.FC<PersonProps> = ({ id, setIsActive }) => {
   const { data } = useGetPersonByIdQuery({ id });
 
   useEffect(() => {
-    setQuery('person', id);
+    if (id) {
+      setQuery('person', id);
+    }
 
     return () => {
       removeParam('person');
@@ -22,7 +24,7 @@ const Person: React.FC<PersonProps> = ({ id, setIsActive }) => {
   }, [id]);
 
   const handelClosePerson = () => {
-    setIsActive(null);
+    setIsActive('');
     removeParam('person');
   };
 

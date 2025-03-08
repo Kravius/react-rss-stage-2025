@@ -35,8 +35,6 @@ export default tseslint.config(
       'react-compiler/react-compiler': 'error',
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
-      '@typescript-eslint/no-explicit-any': 'error',
-      'react/prop-types': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -45,6 +43,9 @@ export default tseslint.config(
           destructuredArrayIgnorePattern: '^_',
         },
       ],
+      'react/prop-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'error',
+      'react/require-default-props': 'off',
     },
     settings: {
       react: {
