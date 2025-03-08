@@ -17,10 +17,8 @@ interface SectionPeoplePageProps {
 const SectionPeoplePage: FC<SectionPeoplePageProps> = ({ data }) => {
   const { isDark } = useTheme();
 
-  // console.log(data, 'SectionPeoplePage');
   const { people, pages } = newFilterPeopleData(data);
   const { next, previous } = pages;
-  console.log(next);
   return (
     <section className={`${styles[isDark ? 'dark' : '']}`}>
       <Suspense fallback={<Spinner />}>

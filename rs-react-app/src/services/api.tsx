@@ -14,6 +14,24 @@ export async function getServerSideProps(
   page: string = '1',
   search: string = ''
 ): Promise<PeopleResponse> {
-  const res = await fetch(`${API_ROOT}/?page=${page}&search=${search}`);
-  return res.json();
+  console.log(search);
+  try {
+    const res = await fetch(`${API_ROOT}/?page=${page}&search=${search}`, {
+      cache: 'force-cache',
+    });
+    if (!res.ok) {
+      throw new Error('Failed to fetch data');
+    }
+    const data = await res.json();
+    console.log(await data, 'getServerSideProps');
+    return data;
+  } catch (error) {
+    console.error('Error fetching data', error);
+  }
+  return {
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  };
 }

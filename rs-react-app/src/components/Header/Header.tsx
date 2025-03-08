@@ -1,10 +1,11 @@
 'use client';
-import { NextPage } from 'next';
+
 // import styles from './Header.module.css';
 import { useTheme } from '@services/ThemeContex';
 import Search from '@components/Search/Search';
+import React from 'react';
 
-const Header: NextPage = () => {
+const Header: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
   return (
     <header>

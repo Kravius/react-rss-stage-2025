@@ -19,7 +19,7 @@ interface PeoplePageProps {
 const PeoplePage = async ({ searchParams }: PeoplePageProps) => {
   const { page = '1', search = '' } = await searchParams;
   const data = await getServerSideProps(page, search);
-
+  console.log(data);
   return (
     <>
       <Header />

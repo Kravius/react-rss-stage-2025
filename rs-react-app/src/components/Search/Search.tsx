@@ -12,22 +12,13 @@ const Search: React.FC = () => {
     setSearchTerm(event.target.value.trim());
   };
 
-  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+  const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchTerm !== '') {
       setQuery('search', searchTerm);
       setIsLoading(true);
-      // setSearchParams((prev) => ({
-      //   ...Object.fromEntries(prev),
-      //   search: searchTerm,
-      // }));
     } else {
       removeParam('search');
-      // setQuery((prev) => {
-      //   const updateParams = new URLSearchParams(prev);
-      //   updateParams.delete('search');
-      //   return updateParams;
-      // });
     }
     setIsLoading(false);
   };

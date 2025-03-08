@@ -6,8 +6,8 @@ import {
   peopleSlice,
   removePersonFromStored,
 } from '@components/PeopleList/people.slice';
-import { PersonToRender } from 'src/type/type';
-import { useState } from 'react';
+import { PersonToRender } from '@type/type';
+import React, { useState } from 'react';
 import Person from './Person';
 import PersonStartScreen from '@components/PersonStartScreen/PersonStartScreen';
 import { useSearchParams } from 'next/navigation';
