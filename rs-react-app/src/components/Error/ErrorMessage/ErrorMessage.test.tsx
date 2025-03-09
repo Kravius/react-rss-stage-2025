@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import ErrorMessage from './ErrorMessage';
 import { describe, expect, it } from 'vitest';
 import '@testing-library/jest-dom';
+import React from 'react';
 
 describe('ErrorMessage component', () => {
   it('renders the error message correctly', () => {

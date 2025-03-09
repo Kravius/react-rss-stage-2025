@@ -1,4 +1,5 @@
 import styles from './ErrorMessage.module.css';
+import React from 'react';
 
 const ErrorMessage: React.FC = () => {
   return (

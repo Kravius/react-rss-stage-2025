@@ -1,10 +1,9 @@
 'use client';
-
 import ErrorBTN from '@components/Error/ErrorBtn/ErrorBtn';
 // import styles from './Footer.module.css';
-import { NextPage } from 'next';
 
-const Footer: NextPage = () => {
+import React from 'react';
+const Footer: React.FC = () => {
   return (
     <footer>
       <ErrorBTN>Error click</ErrorBTN>

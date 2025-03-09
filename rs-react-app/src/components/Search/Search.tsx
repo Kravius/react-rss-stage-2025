@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import useSearchTerm from '@services/customHook/useSearchTerm';
-
+import React from 'react';
 import useQueryParams from '@services/customHook/useQueryparams';
 
 const Search: React.FC = () => {

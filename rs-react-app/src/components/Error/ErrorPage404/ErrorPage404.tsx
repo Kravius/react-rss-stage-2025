@@ -1,6 +1,7 @@
+import React from 'react';
 import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
 
-function ErrorPage404() {
+const ErrorPage404: React.FC = () => {
   const error = useRouteError();
 
   if (isRouteErrorResponse(error)) {
@@ -24,6 +25,6 @@ function ErrorPage404() {
       <h2>Something went wrong</h2>
     </div>
   );
-}
+};
 
 export default ErrorPage404;

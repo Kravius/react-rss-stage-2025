@@ -1,156 +1,98 @@
-// import { render, screen, fireEvent } from '@testing-library/react';
-// import { describe, expect, it, vi, beforeEach } from 'vitest';
-// import PeopleList from './PeopleList';
-// import { BrowserRouter } from 'react-router-dom';
-// import { Provider } from 'react-redux';
-// import { configureStore } from '@reduxjs/toolkit';
-// import { peopleSlice } from './people.slice';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { beforeEach, describe, expect, it, Mock } from 'vitest';
+import { vi } from 'vitest';
+import PeopleList from './PeopleList'; // Путь к компоненту
+import { useTheme } from '@services/ThemeContex';
+import { useAppDispatch, useAppSelector } from '@store/store';
+import { useSearchParams } from 'next/navigation';
+import React from 'react';
+// Мокаем хуки
+vi.mock('@services/ThemeContex', () => ({
+  useTheme: vi.fn(),
+}));
 
-// // Mock data
-// const mockPeople = [
-//   { id: '1', name: 'Luke Skywalker', img: 'luke.jpg' },
-//   { id: '2', name: 'Darth Vader', img: 'vader.jpg' },
-// ];
+vi.mock('@store/store', () => ({
+  useAppDispatch: vi.fn(),
+  useAppSelector: vi.fn(),
+}));
 
-// // Mock store setup
-// const createTestStore = () =>
-//   configureStore({
-//     reducer: {
-//       people: peopleSlice.reducer,
-//     },
-//   });
+vi.mock('next/navigation', () => ({
+  useSearchParams: vi.fn(),
+}));
 
-// // Mocks
-// const mockDispatch = vi.fn();
-// vi.mock('../../store', () => ({
-//   useAppDispatch: () => mockDispatch,
-//   useAppSelector: () => ({ saveEntities: {} }),
-// }));
+describe('PeopleList Component', () => {
+  const mockDispatch = vi.fn();
 
-// vi.mock('../../services/ThemeContex', () => ({
-//   useTheme: () => ({ isDark: false }),
-// }));
+  beforeEach(() => {
+    // Мокаем хук useAppDispatch
+    (useAppDispatch as Mock).mockReturnValue(mockDispatch);
 
-// // Test utils
-// const renderWithProviders = (ui: React.ReactElement) => {
-//   const testStore = createTestStore();
-//   return render(
-//     <Provider store={testStore}>
-//       <BrowserRouter>{ui}</BrowserRouter>
-//     </Provider>
-//   );
-// };
+    // Мокаем хук useAppSelector
+    (useAppSelector as Mock).mockReturnValue({
+      saveEntities: {}, // пустой объект, или заполненный, как нужно для теста
+    });
 
-// describe('PeopleList Component', () => {
-//   beforeEach(() => {
-//     vi.clearAllMocks();
-//   });
+    // Мокаем хук useSearchParams
+    (useSearchParams as Mock).mockReturnValue({
+      get: vi.fn().mockReturnValue(null), // возвращаем null для поиска по person
+    });
 
-//   describe('Rendering', () => {
-//     it('should render empty list when no people provided', () => {
-//       renderWithProviders(<PeopleList people={[]} />);
-//       const container = screen.getByTestId('list-container');
-//       const list = container.querySelector('ul');
-//       expect(list).toBeInTheDocument();
-//       expect(list?.children.length).toBe(0);
-//     });
+    // Мокаем useTheme, чтобы возвращать светлую тему
+    (useTheme as Mock).mockReturnValue({
+      isDark: false,
+    });
+  });
 
-//     it('should render all people in the list', () => {
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-//       mockPeople.forEach((person) => {
-//         expect(screen.getByText(person.name)).toBeInTheDocument();
-//       });
-//     });
+  it('should render the list of people', () => {
+    const people = [
+      { id: '1', name: 'Luke Skywalker', img: 'luke.jpg' },
+      { id: '2', name: 'Darth Vader', img: 'vader.jpg' },
+    ];
 
-//     it('should apply correct CSS classes', () => {
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-//       const items = screen.getAllByRole('listitem');
-//       items.forEach((item) => {
-//         expect(item).toHaveClass('people_list');
-//       });
-//     });
-//   });
+    render(<PeopleList people={people} />);
 
-//   describe('Theme Support', () => {
-//     it('should apply light theme by default', () => {
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-//       const container = screen.getByTestId('list-container');
-//       expect(container).not.toHaveClass('dark');
-//     });
+    // Проверяем, что имена людей отрисовались
+    expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
+    expect(screen.getByText('Darth Vader')).toBeInTheDocument();
+  });
 
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-//       const container = screen.getByTestId('list-container');
-//       expect(container).toHaveClass('dark');
-//     });
-//   });
+  it('should call handleCheckedChange when checkbox is clicked', () => {
+    const people = [{ id: '1', name: 'Luke Skywalker', img: 'luke.jpg' }];
 
-//   describe('Checkbox Interactions', () => {
-//     it('should dispatch putPersonToStored when checkbox is checked', () => {
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-//       const checkbox = screen.getByLabelText(mockPeople[0].name);
+    render(<PeopleList people={people} />);
 
-//       fireEvent.click(checkbox);
+    const checkbox = screen.getByRole('checkbox');
 
-//       expect(mockDispatch).toHaveBeenCalledWith(
-//         expect.objectContaining({
-//           type: 'people/putPersonToStored',
-//           payload: expect.objectContaining({
-//             id: mockPeople[0].id,
-//             person: mockPeople[0],
-//           }),
-//         })
-//       );
-//     });
+    // Симулируем клик по чекбоксу
+    fireEvent.click(checkbox);
 
-//     it('should dispatch removePersonFromStored when checkbox is unchecked', () => {
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-//       const checkbox = screen.getByLabelText(mockPeople[0].name);
+    // Проверяем, что dispatch был вызван
+    expect(mockDispatch).toHaveBeenCalled();
+  });
 
-//       // Check and uncheck
-//       fireEvent.click(checkbox);
-//       fireEvent.click(checkbox);
+  it('should open Person details when button is clicked', () => {
+    const people = [{ id: '1', name: 'Luke Skywalker', img: 'luke.jpg' }];
 
-//       expect(mockDispatch).toHaveBeenLastCalledWith(
-//         expect.objectContaining({
-//           type: 'people/removePersonFromStored',
-//           payload: { id: mockPeople[0].id },
-//         })
-//       );
-//     });
+    render(<PeopleList people={people} />);
 
-//     it('should show checked state for stored people', () => {
-//       vi.mocked(vi.importActual('../../store')).mockImplementation(() => ({
-//         useAppDispatch: () => mockDispatch,
-//         useAppSelector: () => ({
-//           saveEntities: { '1': mockPeople[0] },
-//         }),
-//       }));
+    const button = screen.getByText('Luke Skywalker');
 
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-//       const checkbox = screen.getByLabelText(mockPeople[0].name);
-//       expect(checkbox).toBeChecked();
-//     });
-//   });
+    // Симулируем клик по кнопке
+    fireEvent.click(button);
 
-//   describe('Navigation', () => {
-//     it('should preserve search params in links', () => {
-//       window.history.pushState({}, '', '?search=test');
+    // Проверяем, что открыта форма с персоной
+    // В этом случае ты можешь проверить, что компонент Person отрисован или его props
+    expect(screen.getByText('Person details')).toBeInTheDocument(); // Убедись, что это реально происходит
+  });
 
-//       renderWithProviders(<PeopleList people={mockPeople} />);
+  it('should show PersonStartScreen if no person is active', () => {
+    const people = [{ id: '1', name: 'Luke Skywalker', img: 'luke.jpg' }];
 
-//       const links = screen.getAllByRole('link');
-//       links.forEach((link) => {
-//         expect(link.href).toContain('search=test');
-//       });
-//     });
+    render(<PeopleList people={people} />);
 
-//     it('should have correct navigation paths', () => {
-//       renderWithProviders(<PeopleList people={mockPeople} />);
-
-//       mockPeople.forEach((person) => {
-//         const link = screen.getByText(person.name).closest('a');
-//         expect(link?.getAttribute('href')).toBe(`/people/${person.id}`);
-//       });
-//     });
-//   });
-// });
+    // По умолчанию должен быть отображен компонент PersonStartScreen
+    expect(
+      screen.getByText('Узнай больше о персонажах Звездных воин')
+    ).toBeInTheDocument();
+  });
+});

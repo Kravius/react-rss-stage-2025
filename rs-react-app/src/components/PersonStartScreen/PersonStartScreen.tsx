@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './PersonStartScreen.module.css';
 
 const PersonStartScreen: React.FC = () => {

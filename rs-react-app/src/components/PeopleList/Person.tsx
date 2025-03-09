@@ -19,7 +19,7 @@ const Person: React.FC<PersonProps> = ({ id, setIsActive }) => {
     }
 
     return () => {
-      removeParam('person');
+      // removeParam('person');
     };
   }, [id]);
 
