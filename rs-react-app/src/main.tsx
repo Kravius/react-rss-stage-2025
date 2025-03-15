@@ -1,14 +1,42 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import App from './App.tsx';
+import { Provider } from 'react-redux';
+import { store } from '@store/store.ts';
+import { RouterProvider } from 'react-router-dom';
+import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary.tsx';
+
+import { createBrowserRouter } from 'react-router-dom';
+
+import ErrorPage from '@layout/error/ErrorPage';
+import Root from './layout/Root';
+import UnControlForms from '@layout/forms/UnControlForms';
+import ControlForms from '@layout/forms/ControlForms';
+import Main from '@layout/main/Main';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    children: [
+      { index: true, element: <Main /> },
+      { path: '/un-control-form', element: <UnControlForms /> },
+      { path: '/control-form', element: <ControlForms /> },
+    ],
+  },
+  { path: '*', element: <ErrorPage /> },
+]);
 
 const container = document.getElementById('root');
 
 if (container) {
   createRoot(container).render(
     <StrictMode>
-      <App />
+      <Provider store={store}>
+        <ErrorBoundary>
+          <RouterProvider router={router} />
+        </ErrorBoundary>
+      </Provider>
     </StrictMode>
   );
 } else {
