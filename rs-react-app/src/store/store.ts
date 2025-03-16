@@ -1,8 +1,17 @@
-import { configureStore } from '@reduxjs/toolkit';
+import countryReducer from '@components/countries/CountriesSlice';
+import usersReducer from '@components/users/UsersSlice';
+import { configureStore, createSelector } from '@reduxjs/toolkit';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
-export const store = configureStore({ reducer: {} });
+export const store = configureStore({
+  reducer: { users: usersReducer, countries: countryReducer },
+});
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+
 export type AppDispatch = typeof store.dispatch;
+
+export const useAppSelector = useSelector.withTypes<RootState>();
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+export const useAppStore = useStore.withTypes<typeof store>();
+export const createAppSelector = createSelector.withTypes<RootState>();
