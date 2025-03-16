@@ -5,7 +5,7 @@ const SectionCreateFromBtn: React.FC = () => {
   return (
     <section className={styles['section-btn']}>
       <CreateBtnLink typeProps="un-control-form" />
-      {/* <CreateBtnLink typeProps="control-form" /> */}
+      <CreateBtnLink typeProps="control-form" />
     </section>
   );
 };

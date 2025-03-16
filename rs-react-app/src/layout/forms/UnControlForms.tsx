@@ -23,81 +23,25 @@ const UnControlForms: React.FC = () => {
 
   const submit = useSubmit();
 
-  // const handleSubmitForm = (ev: React.FormEvent<HTMLFormElement>) => {
-  //   ev.preventDefault();
-  //   const [imageBase64, setImageBase64] = useState<string>('');
-  //   setErrors({});
-  //   if (formRef.current) {
-  //     const formData = new FormData(formRef.current);
-
-  //     const user: User = {
-  //       name: formData.get('name') as string,
-  //       age: Number(formData.get('age')),
-  //       email: formData.get('email') as string,
-  //       passwords: formData.get('passwords') as string, // Пароль
-  //       passwordCheck: formData.get('passwordCheck') as string, // Подтверждение пароля
-  //       gender: formData.get('gender') as string,
-  //       terms: !!formData.get('terms'),
-  //       image: imageBase64,
-  //       country: formData.get('country') as string,
-  //     };
-
-  //     const file = formData.get('image') as File;
-
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onloadend = () => {
-  //         const imageBase64 = reader.result as string;
-
-  //         user.image = imageBase64 as string;
-  //         console.log(user.image, 'image');
-  //       };
-  //       reader.readAsDataURL(file);
-  //     }
-
-  //     try {
-  //       userSchema.parse(user);
-  //       user.image = formData.get('image') as string;
-  //       dispatch(putUserToStored({ userId: nanoid(4), user }));
-  //       submit(formData, { method: 'post' });
-  //     } catch (e: unknown) {
-  //       if (e instanceof ZodError) {
-  //         const newErrors = e.errors.reduce(
-  //           (acc: Record<string, string>, error) => {
-  //             acc[error.path[0] as string] = error.message;
-  //             return acc;
-  //           },
-  //           {}
-  //         );
-  //         setErrors((prev) => ({ ...prev, ...newErrors }));
-  //       } else {
-  //         console.error('An unexpected error occurred:', e);
-  //       }
-  //       return;
-  //     }
-  //   }
-  // };
-
   const handleSubmitForm = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     setErrors({});
     if (formRef.current) {
       const formData = new FormData(formRef.current);
 
-      // Обработаем изображение через FileReader, перед отправкой формы
       const file = formData.get('image') as File;
       let imageBase64 = '';
 
       if (file) {
-        imageBase64 = await readFileAsBase64(file); // Чтение изображения как Base64
+        imageBase64 = await readFileAsBase64(file);
       }
 
       const user: User = {
         name: formData.get('name') as string,
         age: Number(formData.get('age')),
         email: formData.get('email') as string,
-        passwords: formData.get('passwords') as string, // Пароль
-        passwordCheck: formData.get('passwordCheck') as string, // Подтверждение пароля
+        passwords: formData.get('passwords') as string,
+        passwordCheck: formData.get('passwordCheck') as string,
         gender: formData.get('gender') as string,
         terms: !!formData.get('terms'),
         image: imageBase64,

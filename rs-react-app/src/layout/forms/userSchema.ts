@@ -55,7 +55,7 @@ export const userSchema = z
       }, 'File must be under 5MB'),
     country: z.string().min(1, { message: 'Please select a country' }),
   })
-  // Валидация на уровне всей схемы, чтобы проверить совпадение паролей
+
   .superRefine(({ passwordCheck, passwords }, ctx) => {
     if (passwordCheck !== passwords) {
       ctx.addIssue({
