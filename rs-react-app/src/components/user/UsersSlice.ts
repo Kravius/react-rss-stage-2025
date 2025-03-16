@@ -8,10 +8,12 @@ export interface User {
   age: number;
   email: string;
   passwords: string;
+  passwordCheck: string;
   gender: string;
   image: string;
   country: string;
 }
+
 type LastAddedUserId = string | null;
 
 export interface Users {
@@ -29,7 +31,9 @@ export const usersSlice = createSlice({
       state: Users,
       action: PayloadAction<{ userId: UserId; user: User }>
     ) => {
-      state.users[action.payload.userId] = action.payload.user;
+      const { userId, user } = action.payload;
+      state.users[userId] = user;
+      state.lastAddedUserId = userId;
     },
 
     removeUserById: (

@@ -10,7 +10,9 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import ErrorPage from '@layout/error/ErrorPage';
 import Root from './layout/Root';
-import UnControlForms from '@layout/forms/UnControlForms';
+import UnControlForms, {
+  action as actionUnControlForms,
+} from '@layout/forms/UnControlForms';
 import ControlForms from '@layout/forms/ControlForms';
 import Main from '@layout/main/Main';
 
@@ -20,7 +22,11 @@ const router = createBrowserRouter([
     element: <Root />,
     children: [
       { index: true, element: <Main /> },
-      { path: '/un-control-form', element: <UnControlForms /> },
+      {
+        path: '/un-control-form',
+        element: <UnControlForms />,
+        action: actionUnControlForms,
+      },
       { path: '/control-form', element: <ControlForms /> },
     ],
   },
