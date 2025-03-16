@@ -1,0 +1,8 @@
+.section-btn {
+  display: flex;
+  width: 100%;
+  border: 1px solid rgb(24, 228, 24);
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 10px;
+}

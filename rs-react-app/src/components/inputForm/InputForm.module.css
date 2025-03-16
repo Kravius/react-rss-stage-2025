@@ -1,0 +1,29 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+
+  input {
+    cursor: pointer;
+    border: 1px solid rgb(205, 41, 41);
+    padding: 5px 10px;
+    border-radius: 10px;
+
+    &:hover,
+    &:focus {
+      border-color: aquamarine;
+    }
+  }
+}
+
+.input-container-gender {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+  cursor: pointer;
+  border: 1px solid rgb(205, 41, 41);
+  padding: 5px 10px;
+  border-radius: 10px;
+}
