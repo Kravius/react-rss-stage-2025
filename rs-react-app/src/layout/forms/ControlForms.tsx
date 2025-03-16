@@ -3,7 +3,10 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import userSchema from './userSchema';
-import { redirect } from 'react-router';
+import { redirect, useSubmit } from 'react-router';
+import { useAppDispatch } from '@store/store';
+import { nanoid } from 'nanoid';
+import { putUserToStored } from '@components/user/UsersSlice';
 
 export const action = async () => {
   return redirect('/');
@@ -12,6 +15,8 @@ export const action = async () => {
 type FormData = z.infer<typeof userSchema>;
 
 const ControlForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const submit = useSubmit();
   const {
     control,
     handleSubmit,
@@ -32,10 +37,11 @@ const ControlForm: React.FC = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<FormData> = (user) => {
     // Handle the form data submission logic here (e.g., storing it or sending to an API)
-    console.log('Form submitted successfully:', data);
-    alert('Form submitted successfully!');
+    console.log('Form submitted successfully:', user);
+    dispatch(putUserToStored({ userId: nanoid(4), user }));
+    submit(user, { method: 'post' });
   };
 
   // Read file as base64 (for image upload)
