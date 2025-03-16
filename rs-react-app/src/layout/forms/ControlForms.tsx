@@ -20,10 +20,11 @@ const ControlForm: React.FC = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     setValue,
   } = useForm<FormData>({
     resolver: zodResolver(userSchema),
+    mode: 'onChange',
     defaultValues: {
       name: '',
       age: 18,
@@ -199,7 +200,13 @@ const ControlForm: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          style={{ padding: '10px', backgroundColor: 'blue', color: 'white' }}
+          disabled={!isValid} // Заблокировать, пока форма не валидна
+          style={{
+            padding: '10px',
+            backgroundColor: !isValid ? 'gray' : 'blue', // Серый цвет, если кнопка заблокирована
+            color: 'white',
+            cursor: !isValid ? 'not-allowed' : 'pointer', // Курсор "запрещено" при блокировке
+          }}
         >
           Submit
         </button>
