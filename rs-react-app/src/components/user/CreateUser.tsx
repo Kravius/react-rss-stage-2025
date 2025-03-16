@@ -21,7 +21,13 @@ const CreateUser: React.FC<userProps> = ({ user, userId }) => {
       <p>country:{user.country}</p>
       <p>email:{user.email}</p>
       <p>gender:{user.gender}</p>
-      <p>{user.image}</p>
+      {user.image && (
+        <img
+          src={user.image} // Base64 строка изображения
+          alt="User profile"
+          style={{ width: '100px', height: '100px' }} // Можно задать размеры изображения
+        />
+      )}
       <button onClick={() => handelDeleteUser(userId)}>delete User</button>
     </div>
   );

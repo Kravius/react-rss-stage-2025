@@ -13,7 +13,7 @@ import Root from './layout/Root';
 import UnControlForms, {
   action as actionUnControlForms,
 } from '@layout/forms/UnControlForms';
-import ControlForms from '@layout/forms/ControlForms';
+// import ControlForms from '@layout/forms/ControlForms';
 import Main from '@layout/main/Main';
 
 const router = createBrowserRouter([
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
         element: <UnControlForms />,
         action: actionUnControlForms,
       },
-      { path: '/control-form', element: <ControlForms /> },
+      // { path: '/control-form', element: <ControlForms /> },
     ],
   },
   { path: '*', element: <ErrorPage /> },

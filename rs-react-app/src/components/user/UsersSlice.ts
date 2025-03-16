@@ -12,6 +12,7 @@ export interface User {
   gender: string;
   image: string;
   country: string;
+  terms: boolean;
 }
 
 type LastAddedUserId = string | null;
