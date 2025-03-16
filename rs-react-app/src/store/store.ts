@@ -1,5 +1,5 @@
 import countryReducer from '@components/countries/CountriesSlice';
-import usersReducer from '@components/users/UsersSlice';
+import usersReducer from '@components/user/UsersSlice';
 import { configureStore, createSelector } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 

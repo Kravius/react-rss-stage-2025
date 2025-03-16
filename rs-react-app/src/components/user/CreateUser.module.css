@@ -1,0 +1,19 @@
+.user-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: start;
+  border: 1px solid palevioletred;
+  border-radius: 10px;
+  width: 250px;
+  padding: 20px;
+  cursor: pointer;
+  &:hover {
+    border-color: rgb(0, 77, 128);
+    box-shadow: 5px 5px rgb(0, 77, 128);
+    scale: 1.1;
+  }
+  p {
+    color: rgb(116, 110, 102);
+  }
+}

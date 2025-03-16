@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-type UserId = string;
+export type UserId = string;
 
-interface User {
+export interface User {
   name: string;
   age: number;
   email: string;
@@ -12,12 +12,14 @@ interface User {
   image: string;
   country: string;
 }
+type LastAddedUserId = string | null;
 
 export interface Users {
   users: Record<UserId, User>;
+  lastAddedUserId: LastAddedUserId;
 }
 
-const initialState: Users = { users: {} };
+const initialState: Users = { users: {}, lastAddedUserId: null };
 
 export const usersSlice = createSlice({
   name: 'users',
@@ -32,15 +34,17 @@ export const usersSlice = createSlice({
 
     removeUserById: (
       state: Users,
-      action: PayloadAction<{ userId: UserId; user: User }>
+      action: PayloadAction<{ userId: UserId }>
     ) => {
       const { [action.payload.userId]: _, ...rest } = state.users;
       state.users = rest;
+      if (state.lastAddedUserId === action.payload.userId) {
+        state.lastAddedUserId = null;
+      }
     },
   },
 });
 
-// Action creators are generated for each case reducer function
 export const { putUserToStored, removeUserById } = usersSlice.actions;
 
 export default usersSlice.reducer;
