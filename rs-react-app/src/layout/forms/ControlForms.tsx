@@ -39,13 +39,11 @@ const ControlForm: React.FC = () => {
   });
 
   const onSubmit: SubmitHandler<FormData> = (user) => {
-    // Handle the form data submission logic here (e.g., storing it or sending to an API)
     console.log('Form submitted successfully:', user);
     dispatch(putUserToStored({ userId: nanoid(4), user }));
     submit(user, { method: 'post' });
   };
 
-  // Read file as base64 (for image upload)
   const readFileAsBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -57,7 +55,6 @@ const ControlForm: React.FC = () => {
     });
   };
 
-  // Map errors to simpler structure (string | undefined)
   const errorMessages = <T extends keyof FormData>(field: T) =>
     errors[field]?.message || '';
 
@@ -176,7 +173,7 @@ const ControlForm: React.FC = () => {
               if (e.target.files) {
                 const file = e.target.files[0];
                 readFileAsBase64(file).then((base64) => {
-                  setValue('image', base64); // Use setValue here to update the image base64
+                  setValue('image', base64);
                 });
               }
             }}
@@ -200,12 +197,12 @@ const ControlForm: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={!isValid} // Заблокировать, пока форма не валидна
+          disabled={!isValid}
           style={{
             padding: '10px',
-            backgroundColor: !isValid ? 'gray' : 'blue', // Серый цвет, если кнопка заблокирована
+            backgroundColor: !isValid ? 'gray' : 'blue',
             color: 'white',
-            cursor: !isValid ? 'not-allowed' : 'pointer', // Курсор "запрещено" при блокировке
+            cursor: !isValid ? 'not-allowed' : 'pointer',
           }}
         >
           Submit
