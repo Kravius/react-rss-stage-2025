@@ -1,8 +1,11 @@
-import { configureStore, createSelector } from "@reduxjs/toolkit";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { countrySlice } from '@components/countrySlice';
+import { configureStore, createSelector } from '@reduxjs/toolkit';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 export const store = configureStore({
-  reducer: {},
+  reducer: {
+    country: countrySlice.reducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
