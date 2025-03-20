@@ -3,10 +3,9 @@ import styles from './ListCountry.module.css';
 import { useEffect, useState } from 'react';
 import { Country, Data } from 'src/type/type';
 import { filterData } from '@services/Api/filter-data';
-import {
-  ascendingDescendingPopulation,
-  filterPopulation,
-} from '@services/filterTable/ascending-descending';
+import { ascendingDescendingPopulation } from '@services/filterTable/ascending-descending';
+import SortCountryDetails from './sort/SortCountryDetails';
+import { filterPopulation } from '@services/filterTable/type';
 
 const ListCountry: React.FC = () => {
   const [data, setData] = useState<Country[]>([]);
@@ -27,7 +26,7 @@ const ListCountry: React.FC = () => {
     <table className={styles['country-table']}>
       <thead>
         <tr className={styles['country-table__header']}>
-          <th>name</th>
+          <th>{<SortCountryDetails data={data} setData={setData} />}</th>
           <th
             onClick={() =>
               ascendingDescendingPopulation({
