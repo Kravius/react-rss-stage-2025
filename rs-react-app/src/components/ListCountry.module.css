@@ -1,7 +1,7 @@
 .country-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
+  margin: 20px auto;
 }
 
 th,
@@ -22,4 +22,9 @@ tr {
   &:hover {
     background-color: gold;
   }
+}
+
+.country-table__header__population {
+  word-wrap: break-word;
+  width: 60px;
 }

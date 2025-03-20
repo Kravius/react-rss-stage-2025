@@ -7,7 +7,7 @@ const filterData = (data: Data[]): Country[] => {
       region: item.region,
       flag: item.flag,
       name: item.name.common,
-      idFromData: index,
+      idFromData: index + data.length.toString(),
     };
   });
 

@@ -1,17 +1,15 @@
-import { Value } from './type';
+import { Country } from 'src/type/type';
+import { filterPopulation } from './type';
 
-const ascendingDescendingPopulation = ({
-  data,
-  setData,
-  filterPopulation,
-  setFilterPopulation,
-}: Value) => {
-  if (filterPopulation === 'ascending') {
-    setData([...data.sort((a, b) => a.population - b.population)]);
-    setFilterPopulation('descending');
+const ascendingDescendingPopulation = (
+  data: Country[],
+  population: filterPopulation
+) => {
+  console.log('ascendingDescendingPopulation');
+  if (population === 'ascending') {
+    return [...data.sort((a, b) => a.population - b.population)];
   } else {
-    setData([...data.sort((a, b) => b.population - a.population)]);
-    setFilterPopulation('ascending');
+    return [...data.sort((a, b) => b.population - a.population)];
   }
 };
 

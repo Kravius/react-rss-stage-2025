@@ -13,5 +13,5 @@ export interface Data {
 
 export interface Country extends Omit<Data, 'name'> {
   name: string;
-  idFromData: number;
+  idFromData: string;
 }
