@@ -1,11 +1,11 @@
 import { setCountryProps } from '@services/filterTable/type';
 
-const SortName: React.FC<setCountryProps> = ({ handelSortName }) => {
+const SortName: React.FC<setCountryProps> = ({ handelSort }) => {
   return (
     <div>
       <input
         placeholder="search by name"
-        onChange={(ev) => handelSortName(ev.target.value || '')}
+        onChange={(ev) => handelSort('name', ev.target.value || '')}
       />
     </div>
   );

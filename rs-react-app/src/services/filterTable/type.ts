@@ -4,18 +4,21 @@
 //   dataForSort: Country[];
 // }
 
+// export interface setCountryProps {
+//   handelSortName: (inputValue: string) => void;
+// }
 export interface setCountryProps {
-  handelSortName: (inputValue: string) => void;
+  handelSort: (props: string, value: string) => void;
 }
 export interface sortCountryProps {
   regions: string[];
-  handelSortRegion: (ev: React.ChangeEvent<HTMLSelectElement>) => void;
+  handelSort: (props: string, value: string) => void;
 }
 
 export interface FormatSort {
   name: string;
   region: string;
-  population: filterPopulation;
+  population: PopulationFormat;
 }
 
-export type filterPopulation = 'ascending' | 'descending';
+export type PopulationFormat = 'ascending' | 'descending';

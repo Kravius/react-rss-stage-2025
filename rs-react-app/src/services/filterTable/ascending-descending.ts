@@ -1,11 +1,8 @@
 import { Country } from 'src/type/type';
-import { filterPopulation } from './type';
+import { PopulationFormat } from './type';
 
-const ascendingDescendingPopulation = (
-  data: Country[],
-  population: filterPopulation
-) => {
-  console.log('ascendingDescendingPopulation');
+const filterPopulation = (data: Country[], population: PopulationFormat) => {
+  console.log('filterPopulation');
   if (population === 'ascending') {
     return [...data.sort((a, b) => a.population - b.population)];
   } else {
@@ -13,4 +10,4 @@ const ascendingDescendingPopulation = (
   }
 };
 
-export { ascendingDescendingPopulation };
+export { filterPopulation };

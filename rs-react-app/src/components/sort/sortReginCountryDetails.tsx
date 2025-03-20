@@ -3,7 +3,7 @@ import { sortCountryProps } from '@services/filterTable/type';
 
 const SortRegionDetails: React.FC<sortCountryProps> = ({
   regions,
-  handelSortRegion,
+  handelSort,
 }) => {
   console.log('SortRegionDetails');
   return (
@@ -11,7 +11,7 @@ const SortRegionDetails: React.FC<sortCountryProps> = ({
       <select
         className={styles['country-list-container']}
         id="countryList"
-        onChange={(ev) => handelSortRegion(ev)}
+        onChange={(ev) => handelSort('region', ev.target.value)}
       >
         <option value="">All Regions</option>
         {regions.map((item, index) => (
