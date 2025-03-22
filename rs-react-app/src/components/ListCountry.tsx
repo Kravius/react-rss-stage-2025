@@ -1,6 +1,6 @@
 import getData from '@services/Api/api';
 import styles from './ListCountry.module.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Country, Data } from 'src/type/type';
 import { filterData } from '@services/Api/filter-data';
 import { filterPopulation } from '@services/filterTable/ascending-descending';
@@ -14,7 +14,6 @@ import { filterName, filterRegion } from '@services/filterTable/filter';
 const ListCountry: React.FC = () => {
   const [data, setData] = useState<Country[]>([]);
   const [dataForSort, setDataForSort] = useState<Country[]>([]);
-  const [regions, setRegions] = useState<string[]>([]);
 
   const [formatSort, setFormatSort] = useState<FormatSort>({
     name: '',
@@ -29,10 +28,15 @@ const ListCountry: React.FC = () => {
 
       setData(dataFilter);
       setDataForSort(dataFilter);
-      setRegions(Array.from(new Set(dataFilter.map((item) => item.region))));
     };
     featchData();
   }, []);
+
+  const regionsMemo = useMemo(() => {
+    if (data.length > 0) {
+      return Array.from(new Set(data.map((item) => item.region)));
+    }
+  }, [data]);
 
   useEffect(() => {
     const { population, name, region } = formatSort;
@@ -42,14 +46,9 @@ const ListCountry: React.FC = () => {
     setDataForSort(sortPopulation);
   }, [formatSort, data]);
 
-  const handelSort = (props: string, value: string) => {
+  const handelSort = useCallback((props: string, value: string) => {
     setFormatSort((prev) => ({ ...prev, [props]: value }));
-  };
-  // const regionsMemo = useMemo(() => {
-  //   if (data.length > 0) {
-  //     return Array.from(new Set(data.map((item) => item.region)));
-  //   }
-  // }, [regions]);
+  }, []);
 
   const createTable = () => (
     <table className={styles['country-table']}>
@@ -71,7 +70,7 @@ const ListCountry: React.FC = () => {
           <th>
             {
               <SortRegionDetails
-                regions={regions || []}
+                regions={regionsMemo || []}
                 handelSort={handelSort}
               />
             }

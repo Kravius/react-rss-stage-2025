@@ -1,6 +1,8 @@
 import { setCountryProps } from '@services/filterTable/type';
+import React from 'react';
 
 const SortName: React.FC<setCountryProps> = ({ handelSort }) => {
+  console.log('name');
   return (
     <div>
       <input
@@ -11,4 +13,4 @@ const SortName: React.FC<setCountryProps> = ({ handelSort }) => {
   );
 };
 
-export default SortName;
+export default React.memo(SortName);

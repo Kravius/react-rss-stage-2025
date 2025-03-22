@@ -1,3 +1,4 @@
+import React, { memo } from 'react';
 import styles from './SortRegionDetails.module.css';
 import { sortCountryProps } from '@services/filterTable/type';
 
@@ -24,4 +25,7 @@ const SortRegionDetails: React.FC<sortCountryProps> = ({
   );
 };
 
-export default SortRegionDetails;
+export default memo(
+  SortRegionDetails,
+  (prevProps, NextProps) => prevProps.regions === NextProps.regions
+);

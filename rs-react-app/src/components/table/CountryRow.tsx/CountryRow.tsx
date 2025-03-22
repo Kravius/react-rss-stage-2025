@@ -13,7 +13,6 @@ const CountryRow: React.FC<CountryRowProps> = ({
   handelCountryClick,
   active,
 }) => {
-  console.log('render CountryRow ', country.idFromData);
   return (
     <>
       <tr
