@@ -1,0 +1,30 @@
+.country-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px auto;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  color: #9b1c1c;
+}
+
+tr {
+  cursor: pointer;
+
+  &:hover {
+    background-color: gold;
+  }
+}
+
+.country-table__header__population {
+  word-wrap: break-word;
+  width: 60px;
+}
