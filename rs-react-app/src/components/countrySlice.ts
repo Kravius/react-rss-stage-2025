@@ -1,31 +1,31 @@
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
-import { Country } from 'src/type/type';
+// import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
+// import { Country } from 'src/type/type';
 
-type idCountry = string;
+// type idCountry = string;
 
-interface initialState {
-  country: Record<idCountry, Country>;
-}
+// interface initialState {
+//   country: Record<idCountry, Country>;
+// }
 
-const initialState: initialState = {
-  country: {},
-};
+// const initialState: initialState = {
+//   country: {},
+// };
 
-export const countrySlice = createSlice({
-  name: 'country',
-  initialState: initialState,
-  reducers: {
-    stored: (state, action: PayloadAction<Country[]>) => {
-      state.country = action.payload.reduce(
-        (acc, item) => {
-          acc[nanoid(3)] = item;
-          return acc;
-        },
-        {} as Record<idCountry, Country>
-      );
-    },
-  },
-});
-export default countrySlice;
+// export const countrySlice = createSlice({
+//   name: 'country',
+//   initialState: initialState,
+//   reducers: {
+//     stored: (state, action: PayloadAction<Country[]>) => {
+//       state.country = action.payload.reduce(
+//         (acc, item) => {
+//           acc[nanoid(3)] = item;
+//           return acc;
+//         },
+//         {} as Record<idCountry, Country>
+//       );
+//     },
+//   },
+// });
+// export default countrySlice;
 
-export const { stored } = countrySlice.actions;
+// export const { stored } = countrySlice.actions;
